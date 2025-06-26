@@ -61,5 +61,25 @@ namespace NguyenManhDuc.WebApp.Controllers
             ViewBag.Keyword = searchTerm;
             return View(products);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchByPrice(decimal minPrice, decimal maxPrice)
+        {
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+
+            var products = await _dataContext.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
+                .ToListAsync();
+
+            ViewBag.Sliders = await _dataContext.Sliders
+            .Where(s => s.Status == 1)
+            .ToListAsync();
+
+            return View("Search", products);
+
+        }
     }
 }

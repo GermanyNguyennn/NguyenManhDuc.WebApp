@@ -9,27 +9,25 @@
 	<link href="~/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.21.2/dist/sweetalert2.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css" rel="stylesheet" />
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
 	<link href="~/css/price-range.css" rel="stylesheet">
 	<link href="~/css/animate.css" rel="stylesheet">
 	<link href="~/css/main.css" rel="stylesheet">
 	<link href="~/css/responsive.css" rel="stylesheet">
-	<!--[if lt IE 9]>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<script src="js/html5shiv.js"></script>
 	<script src="js/respond.min.js"></script>
-	<![endif]-->
 	<link rel="shortcut icon" href="images/ico/favicon.ico">
 	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
 	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
 	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
 	<link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
-</head><!--/head-->
+</head>
 
 <body>
 	<header id="header">
-		<!--header-->
 		<div class="header_top">
-			<!--header_top-->
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-6">
@@ -42,10 +40,9 @@
 					</div>
 				</div>
 			</div>
-		</div><!--/header_top-->
+		</div>
 
 		<div class="header-middle">
-			<!--header-middle-->
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-4">
@@ -60,7 +57,6 @@
 
 								@if (User.Identity?.IsAuthenticated ?? false)
 								{
-									// Nếu là Admin thì bắt buộc phải hoàn thành 2FA
 									if (!isAdmin || (isAdmin && is2FACompleted))
 									{
 										if (isAdmin)
@@ -80,16 +76,14 @@
 								{
 									<li><a asp-area="" asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Đăng Nhập</a></li>
 								}
-
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div><!--/header-middle-->
+		</div>
 
 		<div class="header-bottom">
-			<!--header-bottom-->
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-9">
@@ -119,8 +113,8 @@
 					</div>
 				</div>
 			</div>
-		</div><!--/header-bottom-->
-	</header><!--/header-->
+		</div>
+	</header>
 
 	<section>
 		<div class="container">
@@ -132,7 +126,6 @@
 	</section>
 
 	<footer id="footer">
-		<!--Footer-->
 		<partial name="_FooterPartial" />		
 
 		<div class="footer-bottom">
@@ -143,8 +136,7 @@
 				</div>
 			</div>
 		</div>
-
-	</footer><!--/Footer-->
+	</footer>
 
 	<script src="~/js/jquery.js"></script>
 	<script src="~/js/bootstrap.min.js"></script>
@@ -153,6 +145,7 @@
 	<script src="~/js/jquery.prettyPhoto.js"></script>
 	<script src="~/js/main.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.21.2/dist/sweetalert2.all.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"></script>
 
 	<script>
 		$(function() {

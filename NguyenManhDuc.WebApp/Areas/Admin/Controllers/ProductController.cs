@@ -208,7 +208,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             ViewBag.Keyword = searchTerm;
             return View(products);
-        }
+        }      
 
         private void SetSelectLists(int? categoryId = null, int? brandId = null)
         {

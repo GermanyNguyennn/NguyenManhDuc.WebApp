@@ -38,7 +38,7 @@
                 <tr>
                     <td>@item.Id</td>
                     <td>@item.Name</td>
-                    <td><img src="~/media/logo/@item.LogoImage" width="30%" height="30%" /></td>
+                    <td><img src="@Url.Content($"~/media/logo/{item.LogoImage}")" style="max-width: 100px; max-height: 100px;" /></td>
                     @* <td>@Html.Raw(@item.Description)</td> *@
                     <td>
                         <div id="map">

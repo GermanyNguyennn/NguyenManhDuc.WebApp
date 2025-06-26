@@ -1,0 +1,75 @@
+﻿
+<style>
+	.table.table-bordered,
+	.table.table-bordered th,
+	.table.table-bordered td {
+		border: none !important;
+	}
+</style>
+
+<div class="col-sm-3">
+	<partial name="_SidebarPartial" />
+</div>
+
+<div class="col-sm-9 padding-right">
+	<div class="product-details">
+		<!--product-details-->
+		<div class="col-sm-5">
+			<div class="view-product">
+				<img src="@Url.Content($"~/media/products/{Model.Image}")" alt="@Model.Name" />
+			</div>
+		</div>
+		<div class="col-sm-7">
+			<div class="product-information">
+				<!--/product-information-->
+				<h2>@Model.Name</h2>					
+				<table class="table table-bordered">
+					<tr>
+						<th style="vertical-align: middle;">Giá :</th>
+							<td>
+								<span>
+									<span>
+										@Model.Price.ToString("#,##0 VNĐ")
+									</span>
+								</span>
+							</td>
+						</tr>
+					<tr>
+						<th>Danh Mục :</th>
+						<td><strong>@Model.Category.Name</strong></td>
+					</tr>
+					<tr>
+						<th>Thương Hiệu :</th>
+						<td><strong>@Model.Brand.Name</strong></td>
+					</tr>
+				</table>
+				@if (Model.Quantity > 0)
+				{
+					<a class="btn btn-default add-to-cart" asp-controller="Cart" asp-action="Add" asp-route-Id="@Model.Id">
+						<i class="fa fa-shopping-cart"></i> Thêm Vào Giỏ Hàng
+					</a>
+				}
+				else
+				{
+					<a class="btn btn-default add-to-cart">
+						<i class="fa fa-shopping-cart"></i> Hết Hàng
+					</a>
+				}
+			</div><!--/product-information-->
+		</div>
+	</div><!--/product-details-->
+
+	<div class="category-tab shop-details-tab">
+		<!--category-tab-->
+		<div class="col-sm-12">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#details" data-toggle="tab">Chi Tiết Sản Phẩm</a></li>					
+			</ul>
+		</div>
+		<div class="tab-content">
+			<div class="tab-pane fade active in" id="details">
+				@Html.Raw(@Model.Description)
+			</div>
+		</div>
+	</div><!--/category-tab-->		
+</div>

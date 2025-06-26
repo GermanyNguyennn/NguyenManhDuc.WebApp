@@ -1,0 +1,99 @@
+﻿@using NguyenManhDuc.WebApp.Models
+@model ProductModel
+@{
+    ViewData["Title"] = "Sửa Sản Phẩm";
+}
+
+<div class="">
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label>Tên Sản Phẩm</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label>Ảnh</label>
+        <input asp-for="ImageUpload" class="form-control" />
+        <span asp-validation-for="ImageUpload" class="text-danger" />
+        <img id="imgpreview" class="pt-2" />
+    </div>
+    <div class="form-group">
+        <label>Mô Tả</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Giá Bán</label>
+        <input asp-for="Price" pattern="[0-9.,]+" class="form-control typing-price" />
+        <div style="font-size: 14px; color: gray;" id="price-convert"></div>
+        <span asp-validation-for="Price" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label>Giá Nhập</label>
+        <input asp-for="ImportPrice" pattern="[0-9.,]+" class="form-control typing-importprice" />
+        <div style="font-size: 14px; color: gray;" id="importprice-convert"></div>
+        <span asp-validation-for="ImportPrice" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label>Danh Mục</label>
+        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
+            <option>-- Lựa Chọn --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label>Thương Hiệu</label>
+        <select asp-for="BrandId" class="form-control" asp-items="ViewBag.Brands">
+            <option>-- Lựa Chọn --</option>
+        </select>
+        <span asp-validation-for="BrandId" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <button class="btn btn-warning btn-sm">Sửa</button>
+        <a asp-action="Index" asp-controller="Product" class="btn btn-warning btn-sm">Quay Lại</a>
+    </div>
+</form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+        <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+        <script>
+            CKEDITOR.replace('Description');
+        </script>
+        <script>
+            $("#ImageUpload").change(function(){
+                readURL(this);
+            });
+        </script>
+        <script>
+                    $(".typing-price").on("keyup", function () {
+            var currency_input = parseFloat($(this).val().replace(/[^\d]/g, ''));
+            if (!isNaN(currency_input)) {
+                $("#price-convert").html(
+                    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currency_input)
+                );
+            } else {
+                $("#price-convert").html('');
+            }
+        });
+
+        $(".typing-importprice").on("keyup", function () {
+            var currency_input = parseFloat($(this).val().replace(/[^\d]/g, ''));
+            if (!isNaN(currency_input)) {
+                $("#importprice-convert").html(
+                    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currency_input)
+                );
+            } else {
+                $("#importprice-convert").html('');
+            }
+        });
+
+        </script>
+}

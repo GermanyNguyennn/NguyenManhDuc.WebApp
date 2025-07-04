@@ -15,6 +15,7 @@ namespace NguyenManhDuc.WebApp.Models.VNPay
         public VNPayResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
         {
             var vnPay = new VNPayLibrary();
+
             foreach (var (key, value) in collection)
             {
                 if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
@@ -23,19 +24,29 @@ namespace NguyenManhDuc.WebApp.Models.VNPay
                 }
             }
 
-            var vnPayOrderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
+            var txnRefStr = vnPay.GetResponseData("vnp_TxnRef");
+            var transactionNoStr = vnPay.GetResponseData("vnp_TransactionNo");
+            var amountStr = vnPay.GetResponseData("vnp_Amount");
+
+            if (!long.TryParse(txnRefStr, out var vnPayOrderId) ||
+                !long.TryParse(transactionNoStr, out var vnPayTransactionId) ||
+                !decimal.TryParse(amountStr, out var vnPayAmountRaw))
+            {
+                return new VNPayResponseModel { Success = false };
+            }
+
             var vnPayOrderInfo = vnPay.GetResponseData("vnp_OrderInfo");
-            var vnPayTransactionId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-            decimal vnPayAmount = Convert.ToDecimal(vnPay.GetResponseData("vnp_Amount")) / 100;
+            var vnPayAmount = vnPayAmountRaw / 100;
             var vnPayResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnPaySecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value;
             var checkSignature = vnPay.ValidateSignature(vnPaySecureHash, hashSecret);
+
             if (!checkSignature)
-                return new VNPayResponseModel()
-                {
-                    Success = false
-                };
-            return new VNPayResponseModel()
+            {
+                return new VNPayResponseModel { Success = false };
+            }
+
+            return new VNPayResponseModel
             {
                 Success = true,
                 PaymentMethod = "VNPay",
@@ -162,7 +173,6 @@ namespace NguyenManhDuc.WebApp.Models.VNPay
                 data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
             }
 
-            //remove last '&'
             if (data.Length > 0)
             {
                 data.Remove(data.Length - 1, 1);

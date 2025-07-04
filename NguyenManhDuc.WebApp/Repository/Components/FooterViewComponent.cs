@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NguyenManhDuc.WebApp.Repository.Validation;
 
 namespace NguyenManhDuc.WebApp.Repository.Components
 {

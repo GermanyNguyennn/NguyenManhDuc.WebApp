@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NguyenManhDuc.WebApp.Models.ViewModels;
 using NguyenManhDuc.WebApp.Models;
-using NguyenManhDuc.WebApp.Repository.Validation;
 using NguyenManhDuc.WebApp.Services.Location;
 using Microsoft.EntityFrameworkCore;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Controllers
 {
@@ -78,21 +78,21 @@ namespace NguyenManhDuc.WebApp.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             var cart = GetCart();
 
-            var info = await _dataContext.Information.FirstOrDefaultAsync(x => x.UserId == userId);
+            var information = await _dataContext.Information.FirstOrDefaultAsync(x => x.UserId == userId);
 
             var viewModel = new CartViewModel
             {
                 Cart = cart,
                 TotalAmount = cart.Sum(x => x.Quantity * x.Price),
-                FullName = user?.FullName ?? "",
+                FullName = information?.FullName ?? "",
                 Email = user?.Email ?? "",
                 PhoneNumber = user?.PhoneNumber ?? "",
                 Information = new InformationViewModel
                 {
-                    Address = info?.Address ?? "",
-                    City = info != null ? await _locationService.GetCityNameById(info.City) : "",
-                    District = info != null ? await _locationService.GetDistrictNameById(info.City, info.District) : "",
-                    Ward = info != null ? await _locationService.GetWardNameById(info.District, info.Ward) : ""
+                    Address = information?.Address ?? "",
+                    City = information != null ? await _locationService.GetCityNameById(information.City) : "",
+                    District = information != null ? await _locationService.GetDistrictNameById(information.City, information.District) : "",
+                    Ward = information != null ? await _locationService.GetWardNameById(information.District, information.Ward) : ""
                 }
             };
 

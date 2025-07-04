@@ -10,6 +10,7 @@
 }
 
 <div class="container">
+    <p><a asp-controller="Order" asp-action="Index" class="btn btn-warning btn-sm">Quay Lại</a></p>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -33,7 +34,7 @@
                     <td>@item.OrderCode</td>
                     <td>@item.UserName</td>
                     @* <td>@item.ProductId</td> *@
-                    <td>@item.Product.Name</td>
+                    <td>@item.Product?.Name</td>
                     <td>@item.Quantity</td>
                     <td>@item.Price</td>
                     <td>@subTotal.ToString("#,##0 VNĐ")</td>
@@ -65,7 +66,7 @@
                     <td>@finalAmount.ToString("#,##0 VNĐ")</td>
                 </tr>
             }
-            <p><a asp-controller="Order" asp-action="Index" class="btn btn-warning btn-sm">Quay Lại</a></p>
+            
         </tbody>
     </table>
 </div>

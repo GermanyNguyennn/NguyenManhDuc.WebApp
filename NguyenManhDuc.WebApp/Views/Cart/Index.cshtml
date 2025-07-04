@@ -13,13 +13,6 @@
 							string.IsNullOrWhiteSpace(Model.Information?.Ward);
 }
 
-<style>
-	td {
-		max-width: 300px !important;
-		vertical-align: middle !important;
-	}
-</style>
-
 <section id="cart_items">
 	<div class="container">
 		@if (Model.Cart.Count > 0)
@@ -151,7 +144,7 @@
 					</div>
 
 					<div class="col-md-4 col-sm-12 mb-2">
-						<form method="POST" asp-action="CreatePaymentUrlVnPay" asp-controller="Payment">
+						<form method="POST" asp-action="CreatePaymentUrlVNPay" asp-controller="Payment">
 							<input type="hidden" name="Amount" value="@Model.TotalAfterDiscount" />
 							<input type="hidden" name="OrderInfo" value="Thanh Toán Bằng VNPay" />
 							<input type="hidden" name="OrderType" value="other" />
@@ -181,7 +174,7 @@
 		}
 		else
 		{
-			<img src="" />
+            <img src="~/images/cart/empty.png" />
 			<h5>Giỏ Hàng Của Bạn Trống. <a asp-action="Index" asp-controller="Home">Đi Đến Trang Chủ Để Mua Hàng</a>.</h5>
 		}
 	</div>

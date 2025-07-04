@@ -7,12 +7,14 @@ namespace NguyenManhDuc.WebApp.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Required]
         public int Quantity { get; set; }
-        public int ProductId { get; set; }
-        public DateTime CreatedDate { get; set; }
-        [ForeignKey("ProductId")]
 
+        [Required]
+        public int ProductId { get; set; }
+
+        [ForeignKey("ProductId")]
         public ProductModel? Product { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NguyenManhDuc.WebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class _26062025 : Migration
+    public partial class _03072025 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +30,6 @@ namespace NguyenManhDuc.WebApp.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -84,6 +83,36 @@ namespace NguyenManhDuc.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ColorModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ColorModel", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -128,8 +157,8 @@ namespace NguyenManhDuc.WebApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderInfo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -280,8 +309,10 @@ namespace NguyenManhDuc.WebApp.Migrations
                 name: "Information",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     District = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -303,7 +334,7 @@ namespace NguyenManhDuc.WebApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -312,7 +343,10 @@ namespace NguyenManhDuc.WebApp.Migrations
                     Sold = table.Column<int>(type: "int", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BrandId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    BrandModelId = table.Column<int>(type: "int", nullable: true),
+                    CategoryModelId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -322,11 +356,27 @@ namespace NguyenManhDuc.WebApp.Migrations
                         column: x => x.BrandId,
                         principalTable: "Brands",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Products_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Products_Brands_BrandModelId",
+                        column: x => x.BrandModelId,
+                        principalTable: "Brands",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryModelId",
+                        column: x => x.CategoryModelId,
                         principalTable: "Categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -363,14 +413,144 @@ namespace NguyenManhDuc.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductColors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ColorId = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductColors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductColors_ColorModel_ColorId",
+                        column: x => x.ColorId,
+                        principalTable: "ColorModel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductColors_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductDetailLaptops",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    BrandId = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    GraphicsCardType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RAMCapacity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RAMType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HardDrive = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ScreenSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ScreenTechnology = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Battery = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OperatingSystem = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ScreenResolution = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CPUType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Interface = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductDetailLaptops", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailLaptops_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailLaptops_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailLaptops_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailLaptops_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductDetailPhones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    BrandId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    ScreenSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayTechnology = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RearCamera = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FrontCamera = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ChipSet = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NFC = table.Column<bool>(type: "bit", nullable: true),
+                    RAMCapacity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalStorage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SimCard = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OperatingSystem = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayResolution = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayFeatures = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CPUType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductDetailPhones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailPhones_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetailPhones_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetailPhones_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailPhones_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductQuantities",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -380,7 +560,7 @@ namespace NguyenManhDuc.WebApp.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -410,7 +590,7 @@ namespace NguyenManhDuc.WebApp.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -475,6 +655,59 @@ namespace NguyenManhDuc.WebApp.Migrations
                 column: "CouponId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductColors_ColorId",
+                table: "ProductColors",
+                column: "ColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductColors_ProductId",
+                table: "ProductColors",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailLaptops_BrandId",
+                table: "ProductDetailLaptops",
+                column: "BrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailLaptops_CategoryId",
+                table: "ProductDetailLaptops",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailLaptops_CompanyId",
+                table: "ProductDetailLaptops",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailLaptops_ProductId",
+                table: "ProductDetailLaptops",
+                column: "ProductId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailPhones_BrandId",
+                table: "ProductDetailPhones",
+                column: "BrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailPhones_CategoryId",
+                table: "ProductDetailPhones",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailPhones_CompanyId",
+                table: "ProductDetailPhones",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailPhones_ProductId",
+                table: "ProductDetailPhones",
+                column: "ProductId",
+                unique: true,
+                filter: "[ProductId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductQuantities_ProductId",
                 table: "ProductQuantities",
                 column: "ProductId");
@@ -485,9 +718,19 @@ namespace NguyenManhDuc.WebApp.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_CategoryId",
+                name: "IX_Products_BrandModelId",
                 table: "Products",
-                column: "CategoryId");
+                column: "BrandModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryModelId",
+                table: "Products",
+                column: "CategoryModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CompanyId",
+                table: "Products",
+                column: "CompanyId");
         }
 
         /// <inheritdoc />
@@ -521,6 +764,15 @@ namespace NguyenManhDuc.WebApp.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
+                name: "ProductColors");
+
+            migrationBuilder.DropTable(
+                name: "ProductDetailLaptops");
+
+            migrationBuilder.DropTable(
+                name: "ProductDetailPhones");
+
+            migrationBuilder.DropTable(
                 name: "ProductQuantities");
 
             migrationBuilder.DropTable(
@@ -539,6 +791,9 @@ namespace NguyenManhDuc.WebApp.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "ColorModel");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
@@ -549,6 +804,9 @@ namespace NguyenManhDuc.WebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NguyenManhDuc.WebApp.Repository.Validation;
+using NguyenManhDuc.WebApp.Models;
+using NguyenManhDuc.WebApp.Models.ViewModels;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Controllers
 {
-    [Authorize]
     public class ProductController : Controller
     {
         private readonly DataContext _dataContext;
@@ -18,6 +19,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var products = _dataContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
+                .Include(p => p.Company)
                 .ToArrayAsync();
 
             ViewBag.Sliders = await _dataContext.Sliders
@@ -27,19 +29,28 @@ namespace NguyenManhDuc.WebApp.Controllers
             return View(products);
         }
 
-        public async Task<IActionResult> Detail(int Id)
+        public async Task<IActionResult> Detail(int id)
         {
             var product = await _dataContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
-                .FirstOrDefaultAsync(p => p.Id == Id);
+                .Include(p => p.Company)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (product == null)
+            if (product == null) return NotFound();
+
+            var viewModel = new ProductDetailViewModel
             {
-                return RedirectToAction("Index");
-            }
+                Product = product,
+                PhoneDetail = product.CategoryId == 1
+                    ? await _dataContext.ProductDetailPhones.FirstOrDefaultAsync(x => x.ProductId == id)
+                    : null,
+                LaptopDetail = product.CategoryId == 2
+                    ? await _dataContext.ProductDetailLaptops.FirstOrDefaultAsync(x => x.ProductId == id)
+                    : null
+            };
 
-            return View(product);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -71,6 +82,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var products = await _dataContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
+                .Include(p => p.Company)
                 .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
                 .ToListAsync();
 

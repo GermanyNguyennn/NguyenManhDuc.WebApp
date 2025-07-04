@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Web;
 using NguyenManhDuc.WebApp.Services.EmailTemplates;
 using Microsoft.EntityFrameworkCore;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Controllers
 {
@@ -262,25 +263,24 @@ namespace NguyenManhDuc.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(UserModel userModel)
+        public async Task<IActionResult> Add(RegisterViewModel registerViewModel)
         {
-            if (!ModelState.IsValid) return View(userModel);
+            if (!ModelState.IsValid) return View(registerViewModel);
 
             if (!await _roleManager.RoleExistsAsync("Customer"))
             {
                 TempData["error"] = "Admin Chưa Tạo Vai Trò 'Customer'.";
-                return View(userModel);
+                return View(registerViewModel);
             }
 
             var newUser = new AppUserModel
             {
-                UserName = userModel.UserName,
-                FullName = userModel.FullName,
-                Email = userModel.Email,
-                PhoneNumber = userModel.PhoneNumber
+                UserName = registerViewModel.UserName,
+                Email = registerViewModel.Email,
+                PhoneNumber = registerViewModel.PhoneNumber
             };
 
-            var result = await _userManager.CreateAsync(newUser, userModel.Password);
+            var result = await _userManager.CreateAsync(newUser, registerViewModel.Password);
             if (result.Succeeded)
             {
                 var roleResult = await _userManager.AddToRoleAsync(newUser, "Customer");
@@ -297,9 +297,8 @@ namespace NguyenManhDuc.WebApp.Controllers
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
 
-            return View(userModel);
+            return View(registerViewModel);
         }
-
 
 
         public async Task<IActionResult> Logout(string returnURL = "/")
@@ -464,7 +463,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             {
                 Id = user.Id,
                 UserName = user.UserName,
-                FullName = user.FullName,
+                FullName = information?.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Address = information?.Address,
@@ -480,37 +479,37 @@ namespace NguyenManhDuc.WebApp.Controllers
         public async Task<IActionResult> Information(InformationViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var information = await _dataContext.Information.FirstOrDefaultAsync(s => s.UserId == userId);
             if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login");
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound();
 
-            user.FullName = model.FullName;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
             await _userManager.UpdateAsync(user);
 
-            var info = await _dataContext.Information.FirstOrDefaultAsync(i => i.UserId == userId);
-            if (info == null)
+            if (information == null)
             {
-                info = new InformationModel
+                information = new InformationModel
                 {
-                    Id = Guid.NewGuid().ToString(),
                     UserId = userId,
+                    FullName = model.FullName,
                     Address = model.Address,
                     Ward = model.Ward,
                     District = model.District,
                     City = model.City
                 };
-                _dataContext.Information.Add(info);
+                _dataContext.Information.Add(information);
             }
             else
             {
-                info.Address = model.Address;
-                info.Ward = model.Ward;
-                info.District = model.District;
-                info.City = model.City;
-                _dataContext.Information.Update(info);
+                information.FullName = model.FullName;
+                information.Address = model.Address;
+                information.Ward = model.Ward;
+                information.District = model.District;
+                information.City = model.City;
+                _dataContext.Information.Update(information);
             }
 
             await _dataContext.SaveChangesAsync();

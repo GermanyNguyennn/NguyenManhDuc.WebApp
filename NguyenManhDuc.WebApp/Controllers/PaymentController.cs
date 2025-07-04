@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NguyenManhDuc.WebApp.Models.MoMo;
 using NguyenManhDuc.WebApp.Models.VNPay;
-using NguyenManhDuc.WebApp.Repository.Validation;
+using NguyenManhDuc.WebApp.Repository;
 using NguyenManhDuc.WebApp.Services.MoMo;
 using NguyenManhDuc.WebApp.Services.VNPay;
 
@@ -20,6 +21,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> CreatePaymentUrlMoMo(MoMoInformationModel model)
         {
             var response = await _moMoService.CreatePaymentAsync(model);
@@ -46,7 +48,8 @@ namespace NguyenManhDuc.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePaymentUrlVnPay(VNPayInformationModel model)
+        [AllowAnonymous]
+        public async Task<IActionResult> CreatePaymentUrlVNPay(VNPayInformationModel model)
         {
             var response = await _vnPayService.CreatePaymentAsync(model, HttpContext);
 

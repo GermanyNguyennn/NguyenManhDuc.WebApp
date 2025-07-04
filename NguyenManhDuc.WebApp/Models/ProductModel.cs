@@ -9,7 +9,6 @@ namespace NguyenManhDuc.WebApp.Models
         [Key]
         [Required]
         public int Id { get; set; }
-        [Required]
         public string? Name { get; set; }
         public string? Image { get; set; }
         public string? Description { get; set; }
@@ -20,12 +19,24 @@ namespace NguyenManhDuc.WebApp.Models
         public string? Slug { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
+        public int CompanyId { get; set; }
+
         [ForeignKey("CategoryId")]
         public CategoryModel? Category { get; set; }
         [ForeignKey("BrandId")]
         public BrandModel? Brand { get; set; }
+        [ForeignKey("CompanyId")]
+        public CompanyModel? Company { get; set; }
+
         [NotMapped]
-        [FileExtention]
+        [FileExtension]
         public IFormFile? ImageUpload { get; set; }
+
+        public ProductDetailPhoneModel? ProductDetailPhone { get; set; }
+        public ProductDetailLaptopModel? ProductDetailLaptop { get; set; }
+        public ICollection<ProductQuantityModel> ProductQuantity { get; set; } = new List<ProductQuantityModel>();
+        public ICollection<ProductColorModel> ProductColor { get; set; } = new List<ProductColorModel>();
+        public ICollection<OrderDetailModel> OrderDetail { get; set; } = new List<OrderDetailModel>();
+
     }
 }

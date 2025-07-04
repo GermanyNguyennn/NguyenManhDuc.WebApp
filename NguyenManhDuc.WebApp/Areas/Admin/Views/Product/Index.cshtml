@@ -1,4 +1,5 @@
 ﻿@using NguyenManhDuc.WebApp.Models
+@using NguyenManhDuc.WebApp.Repository
 @using NguyenManhDuc.WebApp.Repository.Validation
 
 @model IEnumerable<ProductModel>
@@ -25,16 +26,15 @@
                 <th scope="col">Id</th>
                 <th scope="col">Tên Sản Phẩm</th>
                 <th scope="col">Ảnh</th> 
-                @* <th scope="col">Mô Tả</th> *@
+                <th scope="col">Thông Số Kỹ Thuật</th>
                 <th scope="col">Giá Bán</th>
                 <th scope="col">Giá Nhập</th>
                 <th scope="col">Thêm Số Lượng</th>
                 <th scope="col">Số Lượng Tồn Kho</th>
                 <th scope="col">Đã Bán</th>
-                @* <th scope="col">Slug</th> *@
                 <th scope="col">Danh Mục</th>
                 <th scope="col">Thương Hiệu</th>
-
+                <th scope="col">Công Ty</th>
             </tr>
         </thead>
         <tbody>
@@ -44,21 +44,22 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td><img src="@Url.Content($"~/media/products/{item.Image}")" style="max-width: 100px; max-height: 100px;" /></td>
-                    @* <td>@Html.Raw(@item.Description)</td> *@
+                    <td>
+                        <a asp-controller="Product" asp-action="IndexDetail" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Xem</a>                       
+                    </td>
                     <td>@item.Price.ToString("#,##0 VNĐ")</td>
                     <td>@item.ImportPrice.ToString("#,##0 VNĐ")</td>
                     <td><a asp-controller="Product" asp-action="IndexQuantity" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Thêm</a></td>
                     <td>@item.Quantity</td>
                     <td>@item.Sold</td>
-                    @* <td>@item.Slug</td> *@
-                    <td>@item.Category.Name</td>
-                    <td>@item.Brand.Name</td>
+                    <td>@item.Category?.Name</td>
+                    <td>@item.Brand?.Name</td>
+                    <td>@item.Company?.Name</td>
                     <td>
                         <a asp-controller="Product" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                        @* <a asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Delete</a> *@
+
                     </td>
                     <td>
-                        @* <a asp-controller="Product" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Edit</a> *@
                         <a asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
                     </td>
                 </tr>

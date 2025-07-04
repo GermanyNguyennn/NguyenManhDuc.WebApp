@@ -1,4 +1,4 @@
-﻿namespace NguyenManhDuc.WebApp.Repository.Validation
+﻿namespace NguyenManhDuc.WebApp.Repository
 {
     public class Paginate
     {

@@ -4,7 +4,6 @@ using NguyenManhDuc.WebApp.Models.MoMo;
 using NguyenManhDuc.WebApp.Models.ViewModels;
 using NguyenManhDuc.WebApp.Models.VNPay;
 using NguyenManhDuc.WebApp.Models;
-using NguyenManhDuc.WebApp.Repository.Validation;
 using NguyenManhDuc.WebApp.Services.EmailTemplates;
 using NguyenManhDuc.WebApp.Services.Location;
 using NguyenManhDuc.WebApp.Services.MoMo;
@@ -12,10 +11,10 @@ using NguyenManhDuc.WebApp.Services.VNPay;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Controllers
 {
-    [Authorize]
     public class CheckoutController : Controller
     {
         private readonly DataContext _dataContext;
@@ -43,6 +42,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
         public IActionResult Index() => View();
 
+        [Authorize]
         public async Task<IActionResult> Checkout(string PaymentMethod, string PaymentId)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -69,7 +69,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             }
 
             var user = await _userManager.Users.Include(u => u.Information).FirstOrDefaultAsync(u => u.UserName == userName);
-            var info = user?.Information;
+            var information = user?.Information;
 
             var orderItem = new OrderModel
             {
@@ -80,13 +80,14 @@ namespace NguyenManhDuc.WebApp.Controllers
                 Status = 1,
                 CouponCode = couponCode,
                 CouponId = couponId,
-                FullName = user?.FullName,
+
+                FullName = information?.FullName,
                 Email = user?.Email,
                 PhoneNumber = user?.PhoneNumber,
-                Address = info?.Address ?? "",
-                City = await _locationService.GetCityNameById(info?.City ?? ""),
-                District = await _locationService.GetDistrictNameById(info?.City ?? "", info?.District ?? ""),
-                Ward = await _locationService.GetWardNameById(info?.District ?? "", info?.Ward ?? "")
+                Address = information?.Address ?? "",
+                City = await _locationService.GetCityNameById(information?.City ?? ""),
+                District = await _locationService.GetDistrictNameById(information?.City ?? "", information?.District ?? ""),
+                Ward = await _locationService.GetWardNameById(information?.District ?? "", information?.Ward ?? "")
             };
 
             _dataContext.Orders.Add(orderItem);
@@ -167,6 +168,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> PaymentCallBackMoMo()
         {
             var query = HttpContext.Request.Query;
@@ -206,6 +208,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> PaymentCallBackVNPay()
         {
             var response = await _vnPayService.PaymentExecuteAsync(HttpContext.Request.Query);

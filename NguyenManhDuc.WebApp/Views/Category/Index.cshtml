@@ -6,8 +6,7 @@
 	<partial name="_SidebarPartial" />
 </div>
 
-<div class="col-sm-9 padding-right">
-	<partial name="_FilterProductsPartial" />
+<div class="col-sm-9">
 	<div class="features_items">
 		<h2 class="title text-center">Sản Phẩm</h2>
 		@foreach (var item in Model)
@@ -18,8 +17,9 @@
 						<div class="productinfo text-center">
 							<a asp-controller="Product" asp-action="Detail" asp-route-Id="@item.Id">
 								<img src="@Url.Content($"~/media/products/{item.Image}")" alt="@item.Name" />
-								<p><h5>@item.Name</h5></p>
 								<p><h2>@item.Price.ToString("#,##0 VNĐ")</h2></p>
+								<p>@item.Name</p>
+
 							</a>
 							@if (@item.Quantity > 0)
 							{
@@ -29,6 +29,22 @@
 							{
 								<a class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Hết Hàng</a>
 							}
+						</div>
+						<div class="product-overlay">
+							<div class="overlay-content">
+								<a asp-controller="Product" asp-action="Detail" asp-route-Id="@item.Id">
+									<p><h2>@item.Price.ToString("#,##0 VNĐ")</h2></p>
+									<p>@item.Name</p>
+								</a>
+								@if (@item.Quantity > 0)
+								{
+									<a class="btn btn-default add-to-cart" asp-controller="Cart" asp-action="Add" asp-route-Id="@item.Id"><i class="fa fa-shopping-cart"></i>Thêm Vào Giỏ Hàng</a>
+								}
+								else
+								{
+									<a class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Hết Hàng</a>
+								}
+							</div>
 						</div>
 					</div>
 					<div class="choose">
@@ -41,7 +57,6 @@
 			</div>
 		}
 	</div>
-	<!--features_items-->
 </div>
 
 @section Scripts {
@@ -52,7 +67,6 @@
 			$('#sort_by').on('change', function () {
 
 				var url = $(this).val();
-				// alert(url);
 				if (url) {
 					window.location = url;
 				}

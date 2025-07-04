@@ -37,10 +37,17 @@ namespace NguyenManhDuc.WebApp.Services.VNPay
         }
         public Task<VNPayResponseModel> PaymentExecuteAsync(IQueryCollection collections)
         {
-            var pay = new VNPayLibrary();
-            var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-
-            return Task.FromResult(response);
+            try
+            {
+                var pay = new VNPayLibrary();
+                var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+                return Task.FromResult<VNPayResponseModel?>(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("VNPay Callback Error: " + ex.Message);
+                return Task.FromResult<VNPayResponseModel?>(null);
+            }
         }
     }
 }

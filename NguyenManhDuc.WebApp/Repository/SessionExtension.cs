@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace NguyenManhDuc.WebApp.Repository.Validation
+namespace NguyenManhDuc.WebApp.Repository
 {
-    public static class SessionExtention
+    public static class SessionExtension
     {
         public static void SetJson(this ISession session, string key, object value)
         {
@@ -12,7 +12,7 @@ namespace NguyenManhDuc.WebApp.Repository.Validation
         public static T? GetJson<T>(this ISession session, string key)
         {
             var sessionData = session.GetString(key);
-            return sessionData == null ? default(T) : JsonConvert.DeserializeObject<T>(sessionData);
+            return sessionData == null ? default : JsonConvert.DeserializeObject<T>(sessionData);
         }
     }
 }

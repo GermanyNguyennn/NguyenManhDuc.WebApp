@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 {
@@ -33,6 +34,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var data = await _dataContext.Products
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
+                .Include(p => p.Company)
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -53,7 +55,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(ProductModel productModel)
         {
-            SetSelectLists(productModel.CategoryId, productModel.BrandId);
+            SetSelectLists(productModel.CategoryId, productModel.BrandId, productModel.CompanyId);
 
             if (!ModelState.IsValid)
             {
@@ -93,7 +95,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ProductModel productModel)
         {
-            SetSelectLists(productModel.CategoryId, productModel.BrandId);
+            SetSelectLists(productModel.CategoryId, productModel.BrandId, productModel.CompanyId);
 
             var existingProduct = await _dataContext.Products.FindAsync(id);
             if (existingProduct == null) return NotFound();
@@ -126,6 +128,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             existingProduct.ImportPrice = productModel.ImportPrice;
             existingProduct.CategoryId = productModel.CategoryId;
             existingProduct.BrandId = productModel.BrandId;
+            existingProduct.CompanyId = productModel.CompanyId;
 
             _dataContext.Update(existingProduct);
             await _dataContext.SaveChangesAsync();
@@ -167,7 +170,6 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             if (product == null) return NotFound();
 
             product.Quantity += model.Quantity;
-            model.CreatedDate = DateTime.Now;
 
             _dataContext.ProductQuantities.Add(model);
             await _dataContext.SaveChangesAsync();
@@ -210,10 +212,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             return View(products);
         }      
 
-        private void SetSelectLists(int? categoryId = null, int? brandId = null)
+        private void SetSelectLists(int? categoryId = null, int? brandId = null, int? companyId = null)
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", categoryId);
             ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name", brandId);
+            ViewBag.Companies = new SelectList(_dataContext.Companies, "Id", "Name", companyId);
         }
 
         private async Task<string> SaveImageAsync(IFormFile image)
@@ -240,6 +243,135 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 System.IO.File.Delete(filePath);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> IndexDetail(int id)
+        {
+            var product = await _dataContext.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+                return NotFound();
+
+            if (product.CategoryId == 1)
+            {
+                var detail = await _dataContext.ProductDetailPhones
+                    .FirstOrDefaultAsync(x => x.ProductId == id);
+
+                if (detail == null)
+                {
+                    detail = new ProductDetailPhoneModel
+                    {
+                        ProductId = product.Id,
+                        CategoryId = product.CategoryId,
+                        BrandId = product.BrandId,
+                        CompanyId = product.CompanyId
+                    };
+                }
+
+                return View("ViewDetailPhone", detail);
+            }
+            else if (product.CategoryId == 2)
+            {
+                var detail = await _dataContext.ProductDetailLaptops
+                    .FirstOrDefaultAsync(x => x.ProductId == id);
+
+                if (detail == null)
+                {
+                    detail = new ProductDetailLaptopModel
+                    {
+                        ProductId = product.Id,
+                        CategoryId = product.CategoryId,
+                        BrandId = product.BrandId,
+                        CompanyId = product.CompanyId
+                    };
+                }
+
+                return View("ViewDetailLaptop", detail);
+            }
+
+            return NotFound("Danh mục không hỗ trợ hiển thị chi tiết.");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddDetail(IFormCollection form)
+        {
+            int categoryId = int.Parse(form["CategoryId"]);
+            int productId = int.Parse(form["ProductId"]);
+
+            if (categoryId == 1)
+            {
+                var detail = await _dataContext.ProductDetailPhones
+                    .FirstOrDefaultAsync(x => x.ProductId == productId);
+
+                if (detail == null)
+                {
+                    detail = new ProductDetailPhoneModel();
+                    _dataContext.ProductDetailPhones.Add(detail);
+                }
+
+                detail.ProductId = productId;
+                detail.CategoryId = categoryId;
+                detail.BrandId = int.Parse(form["BrandId"]);
+                detail.CompanyId = int.Parse(form["CompanyId"]);
+                detail.ScreenSize = form["ScreenSize"];
+                detail.DisplayTechnology = form["DisplayTechnology"];
+                detail.RearCamera = form["RearCamera"];
+                detail.FrontCamera = form["FrontCamera"];
+                detail.ChipSet = form["ChipSet"];
+                detail.NFC = form["NFC"].ToString() == "true";
+                detail.RAMCapacity = form["RAMCapacity"];
+                detail.InternalStorage = form["InternalStorage"];
+                detail.SimCard = form["SimCard"];
+                detail.OperatingSystem = form["OperatingSystem"];
+                detail.DisplayResolution = form["DisplayResolution"];
+                detail.DisplayFeatures = form["DisplayFeatures"];
+                detail.CPUType = form["CPUType"];
+
+                await _dataContext.SaveChangesAsync();
+                TempData["success"] = "Lưu chi tiết điện thoại thành công!";
+            }
+            else if (categoryId == 2) 
+            {
+                var detail = await _dataContext.ProductDetailLaptops
+                    .FirstOrDefaultAsync(x => x.ProductId == productId);
+
+                if (detail == null)
+                {
+                    detail = new ProductDetailLaptopModel();
+                    _dataContext.ProductDetailLaptops.Add(detail);
+                }
+
+                detail.ProductId = productId;
+                detail.CategoryId = categoryId;
+                detail.BrandId = int.Parse(form["BrandId"]);
+                detail.CompanyId = int.Parse(form["CompanyId"]);
+                detail.GraphicsCardType = form["GraphicsCardType"];
+                detail.RAMCapacity = form["RAMCapacity"];
+                detail.RAMType = form["RAMType"];
+                detail.NumberOfRAMSlots = form["NumberOfRAMSlots"];
+                detail.HardDrive = form["HardDrive"];
+                detail.ScreenSize = form["ScreenSize"];
+                detail.ScreenTechnology = form["ScreenTechnology"];
+                detail.Battery = form["Battery"];
+                detail.OperatingSystem = form["OperatingSystem"];
+                detail.ScreenResolution = form["ScreenResolution"];
+                detail.CPUType = form["CPUType"];
+                detail.Interface = form["Interface"];
+
+                await _dataContext.SaveChangesAsync();
+                TempData["success"] = "Lưu chi tiết laptop thành công!";
+            }
+            else
+            {
+                return BadRequest("Danh mục không hợp lệ.");
+            }
+
+            return RedirectToAction("Index");
+        }
+
 
         private string GenerateSlug(string name)
         {

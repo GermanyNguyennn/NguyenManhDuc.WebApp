@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NguyenManhDuc.WebApp.Repository;
 using NguyenManhDuc.WebApp.Repository.Validation;
 
 namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers

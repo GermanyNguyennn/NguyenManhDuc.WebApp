@@ -1,39 +1,52 @@
 ﻿@{
 	var minPrice = ViewBag.MinPrice != null ? (decimal)ViewBag.MinPrice : 0;
 	var maxPrice = ViewBag.MaxPrice != null ? (decimal)ViewBag.MaxPrice : 200000000;
+	var currentUrl = Url.ActionContext.HttpContext.Request.Path;
 }
 
 <div class="left-sidebar">
 	<h2>Danh Mục</h2>
 	<div class="panel-group category-products" id="accordian">
-		<!--category-productsr-->
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h4 class="panel-title"><vc:categories></vc:categories></h4>
 			</div>
-		</div>
-		
-	</div><!--/category-products-->
+		</div>	
+	</div>
 
-	<div class="brands_products">
-		<!--brands_products-->
+	<div class="panel-group brands_products">
 		<h2>Thương Hiệu</h2>
 		<div class="brands-name">
 			<ul class="nav nav-pills nav-stacked">
 				<vc:brands></vc:brands>
 			</ul>
 		</div>
-	</div><!--/brands_products-->
+	</div>
 
 	<div class="price-range">
-		<!--price-range-->
 		<h2>Tìm Kiếm Theo Giá</h2>
 		<div class="well text-center">
 			<input type="text" class="span2" value="" data-slider-min="0" data-slider-max="200000000" data-slider-step="1000000" data-slider-value="@($"[{minPrice},{maxPrice}]")"id="sl2">
-			<br />
-			<b class="pull-left">@minPrice.ToString("#,##0")</b> <b class="pull-right">@maxPrice.ToString("#,##0")</b>
+
+			<hr />
+
+			<b class="pull-left">@minPrice.ToString("#,##0 VNĐ")</b> <b class="pull-right">@maxPrice.ToString("#,##0 VNĐ")</b>
 		</div>
-	</div><!--/price-range-->
+	</div>
+
+	<div class="panel-group">
+		<h2>Sắp Xếp Theo</h2>
+		<select class="form-control" id="sort_by">
+			<option value="">--- Lựa Chọn ---</option>
+			<option value="@currentUrl?sort_by=price_increase">Giá Tăng dần</option>
+			<option value="@currentUrl?sort_by=price_decrease">Giá Giảm dần</option>
+			<option value="@currentUrl?sort_by=price_newest">Mới Nhất</option>
+			<option value="@currentUrl?sort_by=price_oldest">Cũ Nhất</option>
+		</select>
+	</div>
+
+	<hr />
+
 </div>
 
 <script>

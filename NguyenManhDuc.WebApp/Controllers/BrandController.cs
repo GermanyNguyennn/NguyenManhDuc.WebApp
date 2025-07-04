@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NguyenManhDuc.WebApp.Repository.Validation;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Controllers
 {
-    [Authorize]
     public class BrandController : Controller
     {
         private readonly DataContext _dataContext;

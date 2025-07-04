@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NguyenManhDuc.WebApp.Repository.Validation;
+using NguyenManhDuc.WebApp.Repository;
 
 #nullable disable
 
 namespace NguyenManhDuc.WebApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250626134414_26062025")]
-    partial class _26062025
+    [Migration("20250703041703_03072025")]
+    partial class _03072025
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,9 +177,6 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -278,6 +275,52 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ColorModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ColorModel");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CompanyModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ContactModel", b =>
                 {
                     b.Property<int>("Id")
@@ -351,8 +394,11 @@ namespace NguyenManhDuc.WebApp.Migrations
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.InformationModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -361,6 +407,9 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -393,9 +442,11 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderInfo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -495,6 +546,179 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductColorModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductDetailLaptopModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Battery")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CPUType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("GraphicsCardType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HardDrive")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Interface")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RAMCapacity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RAMType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ScreenResolution")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ScreenSize")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ScreenTechnology")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductDetailLaptops");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductDetailPhoneModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CPUType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ChipSet")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DisplayFeatures")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayResolution")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayTechnology")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FrontCamera")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalStorage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("NFC")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RAMCapacity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RearCamera")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ScreenSize")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SimCard")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique()
+                        .HasFilter("[ProductId] IS NOT NULL");
+
+                    b.ToTable("ProductDetailPhones");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductModel", b =>
                 {
                     b.Property<int>("Id")
@@ -506,7 +730,16 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BrandModelId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoryModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -519,7 +752,6 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
@@ -538,7 +770,11 @@ namespace NguyenManhDuc.WebApp.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("BrandModelId");
+
+                    b.HasIndex("CategoryModelId");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Products");
                 });
@@ -550,9 +786,6 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -670,25 +903,25 @@ namespace NguyenManhDuc.WebApp.Migrations
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.InformationModel", b =>
                 {
-                    b.HasOne("NguyenManhDuc.WebApp.Models.AppUserModel", "User")
+                    b.HasOne("NguyenManhDuc.WebApp.Models.AppUserModel", "AppUser")
                         .WithOne("Information")
                         .HasForeignKey("NguyenManhDuc.WebApp.Models.InformationModel", "UserId");
 
-                    b.Navigation("User");
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.OrderDetailModel", b =>
                 {
                     b.HasOne("NguyenManhDuc.WebApp.Models.OrderModel", "Order")
-                        .WithMany("OrderDetails")
+                        .WithMany("OrderDetail")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithMany()
+                        .WithMany("OrderDetail")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -705,7 +938,26 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Navigation("Coupon");
                 });
 
-            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductModel", b =>
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductColorModel", b =>
+                {
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ColorModel", "Color")
+                        .WithMany()
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
+                        .WithMany("ProductColor")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Color");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductDetailLaptopModel", b =>
                 {
                     b.HasOne("NguyenManhDuc.WebApp.Models.BrandModel", "Brand")
                         .WithMany()
@@ -719,17 +971,98 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CompanyModel", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
+                        .WithOne("ProductDetailLaptop")
+                        .HasForeignKey("NguyenManhDuc.WebApp.Models.ProductDetailLaptopModel", "ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductDetailPhoneModel", b =>
+                {
+                    b.HasOne("NguyenManhDuc.WebApp.Models.BrandModel", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId");
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CategoryModel", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CompanyModel", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
+                        .WithOne("ProductDetailPhone")
+                        .HasForeignKey("NguyenManhDuc.WebApp.Models.ProductDetailPhoneModel", "ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductModel", b =>
+                {
+                    b.HasOne("NguyenManhDuc.WebApp.Models.BrandModel", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.BrandModel", null)
+                        .WithMany("Product")
+                        .HasForeignKey("BrandModelId");
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CategoryModel", null)
+                        .WithMany("Product")
+                        .HasForeignKey("CategoryModelId");
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CategoryModel", "Category")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CompanyModel", "Company")
+                        .WithMany("Product")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductQuantityModel", b =>
                 {
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithMany()
+                        .WithMany("ProductQuantity")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -740,9 +1073,37 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Navigation("Information");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.BrandModel", b =>
+                {
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CategoryModel", b =>
+                {
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CompanyModel", b =>
+                {
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.OrderModel", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("OrderDetail");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductModel", b =>
+                {
+                    b.Navigation("OrderDetail");
+
+                    b.Navigation("ProductColor");
+
+                    b.Navigation("ProductDetailLaptop");
+
+                    b.Navigation("ProductDetailPhone");
+
+                    b.Navigation("ProductQuantity");
                 });
 #pragma warning restore 612, 618
         }

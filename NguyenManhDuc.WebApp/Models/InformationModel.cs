@@ -6,13 +6,13 @@ namespace NguyenManhDuc.WebApp.Models
     public class InformationModel
     {
         [Key]
-        public string? Id { get; set; }
+        public int Id { get; set; }
 
         public string? UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public AppUserModel? User { get; set; }
-
+        public AppUserModel? AppUser { get; set; }
+        public string? FullName { get; set; }
         public string? Address { get; set; }
         public string? City { get; set; }
         public string? District { get; set; }

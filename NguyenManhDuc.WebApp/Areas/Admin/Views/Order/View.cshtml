@@ -33,7 +33,7 @@
                         <td>@item.OrderCode</td>
                         <td>@item.UserName</td>
                         <td>@item.ProductId</td>
-                        <td>@item.Product.Name</td>
+                        <td>@item.Product?.Name</td>
                         <td>@item.Quantity</td>
                         <td>@item.Price.ToString("#,##0 VNĐ")</td>
                         <td>@subTotal.ToString("#,##0 VNĐ")</td>
@@ -46,7 +46,7 @@
 
             @{
                 decimal discountValue = Convert.ToDecimal(ViewBag.DiscountValue ?? 0);
-                string discountType = ViewBag.DiscountType?.ToString();
+                string discountType = ViewBag.DiscountType.ToString();
                 decimal discountAmount = 0;
                 decimal finalTotal = totalAmount;
 

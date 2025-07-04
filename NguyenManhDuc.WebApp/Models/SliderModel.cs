@@ -14,7 +14,7 @@ namespace NguyenManhDuc.WebApp.Models
         public string? Description { get; set; }
         public int Status { get; set; }
         [NotMapped]
-        [FileExtention]
+        [FileExtension]
         public IFormFile? ImageUpload { get; set; }
     }
 }

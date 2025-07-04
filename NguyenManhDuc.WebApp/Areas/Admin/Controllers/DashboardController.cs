@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NguyenManhDuc.WebApp.Models.Statistical;
 using NguyenManhDuc.WebApp.Models;
-using NguyenManhDuc.WebApp.Repository.Validation;
 using Microsoft.EntityFrameworkCore;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 {
@@ -25,12 +25,6 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             var statistics = await GetStatisticalData(fromDate, toDate, categoryId, brandId);
             var orders = await GetFilteredOrders(fromDate, toDate);
-
-            var revenueChartData = GetDailyRevenueChartData(orders);
-            var monthlyChartData = GetMonthlyRevenueChartData(orders);
-            var yearlyChartData = GetYearlyRevenueChartData(orders);
-
-            BindChartViewBags(revenueChartData, monthlyChartData, yearlyChartData);
 
             return View(new StatisticalFilterViewModel
             {
@@ -59,66 +53,72 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
         private async Task<List<StatisticalViewModel>> GetStatisticalData(DateTime? fromDate, DateTime? toDate, int? categoryId, int? brandId)
         {
-            var query = _dataContext.OrderDetails
-                .Include(od => od.Order)
-                    .ThenInclude(o => o.Coupon)
-                .Include(od => od.Product)
-                .AsQueryable();
-
-            // Lọc theo ngày và bộ lọc
-            if (fromDate.HasValue)
-                query = query.Where(x => x.Order.CreatedDate.Date >= fromDate.Value.Date);
-
-            if (toDate.HasValue)
-                query = query.Where(x => x.Order.CreatedDate.Date <= toDate.Value.Date);
-
-            if (categoryId.HasValue)
-                query = query.Where(x => x.Product.CategoryId == categoryId);
-
-            if (brandId.HasValue)
-                query = query.Where(x => x.Product.BrandId == brandId);
-
-            // Lấy dữ liệu về để xử lý
-            var list = await query.ToListAsync();
-
-            var statistics = list
-                .GroupBy(x => new
+            var filteredOrderDetails = _dataContext.OrderDetails
+                .Where(od =>
+                    (!fromDate.HasValue || od.Order.CreatedDate.Date >= fromDate.Value.Date) &&
+                    (!toDate.HasValue || od.Order.CreatedDate.Date <= toDate.Value.Date) &&
+                    (!categoryId.HasValue || od.Product.CategoryId == categoryId) &&
+                    (!brandId.HasValue || od.Product.BrandId == brandId)
+                )
+                .Select(od => new
                 {
-                    x.ProductId,
-                    x.Product.Name,
-                    x.Product.Image,
-                    x.Product.ImportPrice
-                })
+                    od.ProductId,
+                    ProductName = od.Product.Name,
+                    ProductImage = od.Product.Image,
+                    ProductImportPrice = od.Product.ImportPrice,
+
+                    od.Price,
+                    od.Quantity,
+
+                    OrderId = od.Order.Id,
+                    OrderCreatedDate = od.Order.CreatedDate,
+                    CouponId = od.Order.CouponId,
+                    Coupon = od.Order.Coupon,
+
+                    OrderTotal = od.Order.OrderDetail.Sum(x => x.Price * x.Quantity)
+                });
+
+            var list = await filteredOrderDetails
+                .AsNoTracking()
+                .ToListAsync();
+
+            var grouped = list
+                .GroupBy(x => new { x.ProductId, x.ProductName, x.ProductImage, x.ProductImportPrice })
                 .Select(group =>
                 {
                     var totalQuantity = group.Sum(x => x.Quantity);
                     var totalRevenue = group.Sum(x => x.Price * x.Quantity);
-                    var totalCost = group.Sum(x => x.Quantity * x.Product.ImportPrice);
+                    var totalCost = group.Sum(x => x.Quantity * x.ProductImportPrice);
 
-                    var withCoupon = group.Where(x => x.Order.CouponId != null).ToList();
-                    var withoutCoupon = group.Where(x => x.Order.CouponId == null).ToList();
+                    var withCoupon = group.Where(x => x.CouponId != null).ToList();
+                    var withoutCoupon = group.Where(x => x.CouponId == null).ToList();
 
                     var revenueWithCoupon = withCoupon.Sum(x => x.Price * x.Quantity);
-                    var costWithCoupon = withCoupon.Sum(x => x.Quantity * x.Product.ImportPrice);
+                    var costWithCoupon = withCoupon.Sum(x => x.Quantity * x.ProductImportPrice);
 
                     var revenueWithoutCoupon = withoutCoupon.Sum(x => x.Price * x.Quantity);
-                    var costWithoutCoupon = withoutCoupon.Sum(x => x.Quantity * x.Product.ImportPrice);
+                    var costWithoutCoupon = withoutCoupon.Sum(x => x.Quantity * x.ProductImportPrice);
 
                     var totalDiscountCoupon = withCoupon.Sum(x =>
                     {
-                        var total = x.Price * x.Quantity;
-                        var discount = x.Order.Coupon == null ? 0 :
-                            (x.Order.Coupon.DiscountType == DiscountType.Percent
-                                ? total * x.Order.Coupon.DiscountValue / 100
-                                : x.Order.Coupon.DiscountValue);
-                        return Math.Min(discount, total);
+                        var orderDetails = list.Where(o => o.OrderId == x.OrderId).ToList();
+                        var orderTotal = orderDetails.Sum(od => od.Price * od.Quantity);
+                        var thisLineTotal = x.Price * x.Quantity;
+
+                        var discount = x.Coupon == null ? 0 :
+                            (x.Coupon.DiscountType == DiscountType.Percent
+                                ? orderTotal * x.Coupon.DiscountValue / 100
+                                : x.Coupon.DiscountValue);
+
+                        var allocatedDiscount = orderTotal > 0 ? (thisLineTotal / orderTotal) * discount : 0;
+                        return Math.Min(allocatedDiscount, thisLineTotal);
                     });
 
                     return new StatisticalViewModel
                     {
                         ProductId = group.Key.ProductId,
-                        ProductName = group.Key.Name,
-                        Image = group.Key.Image,
+                        ProductName = group.Key.ProductName,
+                        Image = group.Key.ProductImage,
 
                         TotalQuantitySold = totalQuantity,
                         TotalRevenue = totalRevenue,
@@ -135,16 +135,15 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
                         TotalDiscountCoupon = totalDiscountCoupon,
 
-                        FirstSoldDate = group.Min(x => x.Order.CreatedDate),
-                        LastSoldDate = group.Max(x => x.Order.CreatedDate)
+                        FirstSoldDate = group.Min(x => x.OrderCreatedDate),
+                        LastSoldDate = group.Max(x => x.OrderCreatedDate)
                     };
                 })
                 .OrderByDescending(x => x.TotalRevenue)
                 .ToList();
 
-            return statistics;
+            return grouped;
         }
-
 
         private async Task<List<OrderModel>> GetFilteredOrders(DateTime? fromDate, DateTime? toDate)
         {
@@ -152,88 +151,9 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 .Where(o =>
                     (!fromDate.HasValue || o.CreatedDate.ToLocalTime().Date >= fromDate.Value.Date) &&
                     (!toDate.HasValue || o.CreatedDate.ToLocalTime().Date <= toDate.Value.Date))
-                .Include(o => o.OrderDetails)
+                .Include(o => o.OrderDetail)
                 .Include(o => o.Coupon)
                 .ToListAsync();
-        }
-
-        private List<RevenueChartViewModel> GetDailyRevenueChartData(List<OrderModel> orders)
-        {
-            var data = orders
-                .GroupBy(o => o.CreatedDate.ToLocalTime().Date)
-                .Select(g => new RevenueChartViewModel
-                {
-                    Date = g.Key,
-                    RevenueBeforeDiscount = g.Sum(order => order.OrderDetails.Sum(od => od.Price * od.Quantity)),
-                    RevenueAfterDiscount = g.Sum(order =>
-                    {
-                        var total = order.OrderDetails.Sum(od => od.Price * od.Quantity);
-                        var discount = order.Coupon == null ? 0 :
-                            (order.Coupon.DiscountType == DiscountType.Percent ? total * order.Coupon.DiscountValue / 100 : order.Coupon.DiscountValue);
-                        return Math.Max(total - discount, 0);
-                    })
-                })
-                .OrderBy(x => x.Date)
-                .ToList();
-
-            return data;
-        }
-
-        private List<dynamic> GetMonthlyRevenueChartData(List<OrderModel> orders)
-        {
-            return orders
-                .GroupBy(o => new { o.CreatedDate.Year, o.CreatedDate.Month })
-                .Select(g => new
-                {
-                    Month = new DateTime(g.Key.Year, g.Key.Month, 1),
-                    RevenueBefore = g.Sum(order => order.OrderDetails.Sum(od => od.Price * od.Quantity)),
-                    RevenueAfter = g.Sum(order =>
-                    {
-                        var total = order.OrderDetails.Sum(od => od.Price * od.Quantity);
-                        var discount = order.Coupon == null ? 0 :
-                            (order.Coupon.DiscountType == DiscountType.Percent ? total * order.Coupon.DiscountValue / 100 : order.Coupon.DiscountValue);
-                        return Math.Max(total - discount, 0);
-                    })
-                })
-                .OrderBy(x => x.Month)
-                .ToList<dynamic>();
-        }
-
-        private List<dynamic> GetYearlyRevenueChartData(List<OrderModel> orders)
-        {
-            return orders
-                .GroupBy(o => o.CreatedDate.Year)
-                .Select(g => new
-                {
-                    Year = g.Key,
-                    RevenueBefore = g.Sum(order => order.OrderDetails.Sum(od => od.Price * od.Quantity)),
-                    RevenueAfter = g.Sum(order =>
-                    {
-                        var total = order.OrderDetails.Sum(od => od.Price * od.Quantity);
-                        var discount = order.Coupon == null ? 0 :
-                            (order.Coupon.DiscountType == DiscountType.Percent ? total * order.Coupon.DiscountValue / 100 : order.Coupon.DiscountValue);
-                        return Math.Max(total - discount, 0);
-                    })
-                })
-                .OrderBy(x => x.Year)
-                .ToList<dynamic>();
-        }
-
-        private void BindChartViewBags(List<RevenueChartViewModel> daily, List<dynamic> monthly, List<dynamic> yearly)
-        {
-            ViewBag.RevenueChartData = daily;
-            ViewBag.TotalRevenueBefore = daily.Sum(x => x.RevenueBeforeDiscount);
-            ViewBag.TotalRevenueAfter = daily.Sum(x => x.RevenueAfterDiscount);
-            ViewBag.TotalDiscount = ViewBag.TotalRevenueBefore - ViewBag.TotalRevenueAfter;
-
-            ViewBag.MonthlyChartLabels = monthly.Select(x => ((DateTime)x.Month).ToString("MM/yyyy")).ToList();
-            ViewBag.MonthlyRevenueBefore = monthly.Select(x => (decimal)x.RevenueBefore).ToList();
-            ViewBag.MonthlyRevenueAfter = monthly.Select(x => (decimal)x.RevenueAfter).ToList();
-
-            ViewBag.YearlyChartLabels = yearly.Select(x => x.Year.ToString()).ToList();
-            ViewBag.YearlyRevenueBefore = yearly.Select(x => (decimal)x.RevenueBefore).ToList();
-            ViewBag.YearlyRevenueAfter = yearly.Select(x => (decimal)x.RevenueAfter).ToList();
-            ViewBag.YearlyTotalRevenue = yearly.ToDictionary(x => x.Year.ToString(), x => (decimal)x.RevenueAfter);
-        }
+        }       
     }
 }

@@ -7,7 +7,6 @@ namespace NguyenManhDuc.WebApp.Models
     public class ContactModel
     {
         [Key]
-        [Required]
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? LogoImage { get; set; }
@@ -17,7 +16,7 @@ namespace NguyenManhDuc.WebApp.Models
         public string? Phone { get; set; }
         public string? Address { get; set; }
         [NotMapped]
-        [FileExtention]
+        [FileExtension]
         public IFormFile? ImageUpload { get; set; }
 
     }

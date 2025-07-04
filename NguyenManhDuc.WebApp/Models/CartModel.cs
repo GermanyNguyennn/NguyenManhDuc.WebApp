@@ -9,10 +9,7 @@
         public string Image { get; set; }
         public decimal Total => Price * Quantity;
 
-        public CartModel()
-        {
-
-        }
+        public CartModel() { }
 
         public CartModel(ProductModel product)
         {

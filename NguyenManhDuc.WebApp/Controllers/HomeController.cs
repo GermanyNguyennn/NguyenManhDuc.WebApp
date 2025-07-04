@@ -2,7 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NguyenManhDuc.WebApp.Models;
-using NguyenManhDuc.WebApp.Repository.Validation;
+using NguyenManhDuc.WebApp.Models.ViewModels;
+using NguyenManhDuc.WebApp.Repository;
 
 namespace NguyenManhDuc.WebApp.Controllers
 {
@@ -21,6 +22,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var query = _dataContext.Products
             .Include(p => p.Category)
             .Include(p => p.Brand)
+            .Include(p => p.Company)
             .AsQueryable();
 
             if (!string.IsNullOrEmpty(startprice) && !string.IsNullOrEmpty(endprice))
@@ -32,25 +34,14 @@ namespace NguyenManhDuc.WebApp.Controllers
                 }
             }
 
-            switch (sort_by)
+            query = sort_by switch
             {
-                case "price_increase":
-                    query = query.OrderBy(p => p.Price);
-                    break;
-                case "price_decrease":
-                    query = query.OrderByDescending(p => p.Price);
-                    break;
-                case "price_newest":
-                    query = query.OrderByDescending(p => p.Id);
-                    break;
-                case "price_oldest":
-                    query = query.OrderBy(p => p.Id);
-                    break;
-                default:
-                    query = query.OrderByDescending(p => p.Id);
-                    break;
-            }
-
+                "price_increase" => query.OrderBy(p => p.Price),
+                "price_decrease" => query.OrderByDescending(p => p.Price),
+                "price_newest" => query.OrderByDescending(p => p.Id),
+                "price_oldest" => query.OrderBy(p => p.Id),
+                _ => query.OrderByDescending(p => p.Id),
+            };
             var products = await query.ToListAsync();
 
             ViewBag.Sliders = await _dataContext.Sliders

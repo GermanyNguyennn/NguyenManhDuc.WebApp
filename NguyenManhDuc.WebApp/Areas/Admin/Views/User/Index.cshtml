@@ -1,4 +1,5 @@
 ﻿@using NguyenManhDuc.WebApp.Models.ViewModels
+@using NguyenManhDuc.WebApp.Repository
 @using NguyenManhDuc.WebApp.Repository.Validation
 @model IEnumerable<UserWithRoleViewModel>
 @{
@@ -32,14 +33,14 @@
             @foreach (var item in Model)
             {
                     <tr>
-                        <td>@item.User.Id</td>
-                        <td>@item.User.UserName</td>
-                        <td>@item.User.Email</td>
-                        <td>@item.User.PhoneNumber</td>
+                        <td>@item.User?.Id</td>
+                        <td>@item.User?.UserName</td>
+                        <td>@item.User?.Email</td>
+                        <td>@item.User?.PhoneNumber</td>
                         <td>@item.RoleName</td>                
                         <td>
-                            <a asp-controller="User" asp-action="Edit" asp-route-Id="@item.User.Id" class="btn btn-warning btn-sm">Sửa</a>
-                            <a asp-controller="User" asp-action="Delete" asp-route-Id="@item.User.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
+                            <a asp-controller="User" asp-action="Edit" asp-route-Id="@item.User?.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-controller="User" asp-action="Delete" asp-route-Id="@item.User?.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
                         </td>
                     </tr>
             }

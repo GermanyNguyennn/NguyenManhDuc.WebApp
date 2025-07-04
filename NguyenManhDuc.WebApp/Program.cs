@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using NguyenManhDuc.WebApp.Models.MoMo;
 using NguyenManhDuc.WebApp.Models;
-using NguyenManhDuc.WebApp.Repository.Validation;
 using NguyenManhDuc.WebApp.Services.EmailTemplates;
 using NguyenManhDuc.WebApp.Services.Location;
 using NguyenManhDuc.WebApp.Services.MoMo;
 using NguyenManhDuc.WebApp.Services.VNPay;
 using Microsoft.EntityFrameworkCore;
+using NguyenManhDuc.WebApp.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +27,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache();
@@ -58,7 +57,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
     options.User.RequireUniqueEmail = true;
 
-    // Password settings.
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
@@ -77,7 +75,6 @@ app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
 
 app.UseSession();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

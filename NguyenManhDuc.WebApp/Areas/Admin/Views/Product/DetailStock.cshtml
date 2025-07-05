@@ -1,0 +1,43 @@
+﻿@using NguyenManhDuc.WebApp.Areas.Admin.Models.ViewModels
+@model AdminProductStockViewModel
+@{
+    ViewData["Title"] = "Chi tiết tồn kho sản phẩm";
+}
+
+<h2 class="text-center">@Model.Product.Name</h2>
+<hr />
+
+<h4>🔹 Số lượng theo Màu</h4>
+<table class="table table-bordered">
+    <thead><tr><th>Màu</th><th>Số lượng</th></tr></thead>
+    <tbody>
+        @foreach (var color in Model.Colors)
+        {
+            <tr><td>@color.ColorName</td><td>@color.Quantity</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>🔹 Số lượng theo Dung lượng</h4>
+<table class="table table-bordered">
+    <thead><tr><th>Dung lượng</th><th>Số lượng</th></tr></thead>
+    <tbody>
+        @foreach (var capacity in Model.Capacities)
+        {
+            <tr><td>@capacity.CapacityName</td><td>@capacity.Quantity</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>🔹 Số lượng theo Tổ hợp Màu + Dung lượng</h4>
+<table class="table table-bordered">
+    <thead><tr><th>Màu</th><th>Dung lượng</th><th>Số lượng</th></tr></thead>
+    <tbody>
+        @foreach (var variant in Model.Variants)
+        {
+            <tr><td>@variant.ColorName</td><td>@variant.CapacityName</td><td>@variant.Quantity</td></tr>
+        }
+    </tbody>
+</table>
+
+<p><a asp-action="Index" class="btn btn-warning btn-sm">Quay Lại</a></p>

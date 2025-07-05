@@ -1,0 +1,31 @@
+﻿@using NguyenManhDuc.WebApp.Models
+@model List<ProductCapacityModel>
+@{
+    ViewData["Title"] = "Quản lý số lượng dung lượng";
+    var productId = ViewBag.ProductId;
+}
+
+<p><a class="btn btn-warning btn-sm" asp-action="AddCapacityQuantity" asp-route-id="@productId">Thêm Dung Lượng</a></p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Dung lượng</th>
+            <th>Số lượng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Capacity.Capacity</td>
+                <td>@item.Quantity</td>
+                <td class="text-center">
+                    <a asp-action="EditCapacityQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="DeleteCapacityQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xoá dung lượng này?');">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

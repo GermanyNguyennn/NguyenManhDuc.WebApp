@@ -1,0 +1,45 @@
+﻿@using NguyenManhDuc.WebApp.Models
+@using NguyenManhDuc.WebApp.Repository
+@using NguyenManhDuc.WebApp.Repository.Validation
+@model IEnumerable<CapacityModel>
+@{
+    ViewData["Title"] = "Danh Sách Dung Lượng";
+
+    Paginate pager = new Paginate();
+
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="">
+    <p><a asp-controller="Capacity" asp-action="Add" class="btn btn-warning btn-sm">Thêm Dung Lượng</a></p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Dung Lượng</th>
+                <th scope="col">Slug</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Capacity</td>
+                    <td>@item.Slug</td>
+                    <td>
+                        <a asp-controller="Color" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                        <a asp-controller="Color" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_Paging" model="@pager" />
+</div>

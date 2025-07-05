@@ -102,7 +102,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(brandModel);
             }
 
-            _dataContext.Update(brandModel);
+            _dataContext.Brands.Update(brandModel);
             await _dataContext.SaveChangesAsync();
 
             TempData["success"] = "Cập nhật thương hiệu thành công!";

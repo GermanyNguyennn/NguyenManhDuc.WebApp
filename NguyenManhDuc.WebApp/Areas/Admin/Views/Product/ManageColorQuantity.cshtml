@@ -1,0 +1,31 @@
+﻿@using NguyenManhDuc.WebApp.Models
+@model List<ProductColorModel>
+@{
+    ViewData["Title"] = "Quản lý số lượng màu sắc";
+    var productId = ViewBag.ProductId;
+}
+
+<p><a class="btn btn-warning btn-sm" asp-action="AddColorQuantity" asp-route-id="@productId">Thêm Màu Sắc</a></p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên màu</th>
+            <th>Số lượng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Color.Color</td>
+                <td>@item.Quantity</td>
+                <td class="text-center">
+                    <a asp-action="EditColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="DeleteColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xoá màu này?');">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

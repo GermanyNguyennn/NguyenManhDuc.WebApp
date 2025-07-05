@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NguyenManhDuc.WebApp.Models;
 using NguyenManhDuc.WebApp.Repository;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 
 namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class CompanyController : Controller
+    public class CapacityController : Controller
     {
         private readonly DataContext _dataContext;
-        public CompanyController(DataContext context)
+
+        public CapacityController(DataContext context)
         {
             _dataContext = context;
         }
@@ -24,87 +25,87 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             const int pageSize = 10;
             if (page < 1) page = 1;
 
-            int totalItems = await _dataContext.Companies.CountAsync();
+            int totalItems = await _dataContext.Capacities.CountAsync();
             var pager = new Paginate(totalItems, page, pageSize);
 
-            var Companys = await _dataContext.Companies
-                .OrderBy(b => b.Id)
+            var capacities = await _dataContext.Capacities
+                .OrderBy(c => c.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             ViewBag.Pager = pager;
-            return View(Companys);
+            return View(capacities);
         }
 
         public IActionResult Add() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(CompanyModel CompanyModel)
+        public async Task<IActionResult> Add(CapacityModel capacityModel)
         {
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Dữ liệu không hợp lệ.";
-                return View(CompanyModel);
+                return View(capacityModel);
             }
 
-            CompanyModel.Slug = GenerateSlug(CompanyModel.Name);
+            capacityModel.Slug = GenerateSlug(capacityModel.Capacity);
 
-            bool slugExists = await _dataContext.Companies
-                .AnyAsync(b => b.Slug == CompanyModel.Slug);
+            bool slugExists = await _dataContext.Capacities
+                .AnyAsync(c => c.Slug == capacityModel.Slug);
 
             if (slugExists)
             {
-                TempData["error"] = "Công ty đã tồn tại.";
-                return View(CompanyModel);
+                TempData["error"] = "Dung lượng đã tồn tại.";
+                return View(capacityModel);
             }
 
-            _dataContext.Companies.Add(CompanyModel);
+            _dataContext.Capacities.Add(capacityModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm công ty thành công!";
+            TempData["success"] = "Thêm dung lượng thành công!";
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var Company = await _dataContext.Companies.FindAsync(id);
-            if (Company == null)
+            var capacities = await _dataContext.Capacities.FindAsync(id);
+            if (capacities == null)
             {
-                TempData["error"] = "Không tìm thấy công ty.";
+                TempData["error"] = "Không tìm thấy dung lượng.";
                 return RedirectToAction("Index");
             }
 
-            return View(Company);
+            return View(capacities);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CompanyModel CompanyModel)
+        public async Task<IActionResult> Edit(CapacityModel capacityModel)
         {
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Dữ liệu không hợp lệ.";
-                return View(CompanyModel);
+                return View(capacityModel);
             }
 
-            CompanyModel.Slug = GenerateSlug(CompanyModel.Name);
+            capacityModel.Slug = GenerateSlug(capacityModel.Capacity);
 
-            bool slugExists = await _dataContext.Companies
-                .AnyAsync(b => b.Id != CompanyModel.Id && b.Slug == CompanyModel.Slug);
+            bool slugExists = await _dataContext.Capacities
+                .AnyAsync(c => c.Id != capacityModel.Id && c.Slug == capacityModel.Slug);
 
             if (slugExists)
             {
-                TempData["error"] = "Tên công ty bị trùng với công ty khác.";
-                return View(CompanyModel);
+                TempData["error"] = "Tên dung lượng bị trùng với dung lượng khác.";
+                return View(capacityModel);
             }
 
-            _dataContext.Update(CompanyModel);
+            _dataContext.Capacities.Update(capacityModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật công ty thành công!";
+            TempData["success"] = "Cập nhật màu sắc thành công!";
             return RedirectToAction("Index");
         }
 
@@ -112,17 +113,17 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var Company = await _dataContext.Companies.FindAsync(id);
-            if (Company == null)
+            var capacities = await _dataContext.Capacities.FindAsync(id);
+            if (capacities == null)
             {
-                TempData["error"] = "Không tìm thấy công ty.";
+                TempData["error"] = "Không tìm thấy màu sắc.";
                 return RedirectToAction("Index");
             }
 
-            _dataContext.Companies.Remove(Company);
+            _dataContext.Capacities.Remove(capacities);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa công ty thành công!";
+            TempData["success"] = "Xóa dung lượng thành công!";
             return RedirectToAction("Index");
         }
 

@@ -1,0 +1,38 @@
+﻿@using NguyenManhDuc.WebApp.Models
+@model ProductCapacityModel
+@{
+    ViewData["Title"] = "Sửa số lượng dung lượng";
+    var capacities = ViewBag.Capacities as List<CapacityModel>;
+    var productId = ViewBag.ProductId;
+}
+
+<form asp-action="EditCapacityQuantity" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="ProductId" value="@productId" />
+
+    <div class="form-group">
+        <label>Dung lượng</label>
+        <select asp-for="CapacityId" class="form-control" asp-items="@(new SelectList(capacities, "Id", "Capacity"))">
+            <option value="">-- Chọn dung lượng --</option>
+        </select>
+        <span asp-validation-for="CapacityId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Số lượng</label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-warning btn-sm">Thêm</button>
+        <a asp-action="ManageCapacityQuantity" asp-route-id="@productId" class="btn btn-warning btn-sm">Quay lại</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

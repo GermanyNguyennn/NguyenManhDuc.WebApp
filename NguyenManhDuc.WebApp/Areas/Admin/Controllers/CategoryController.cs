@@ -103,7 +103,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(categoryModel);
             }
 
-            _dataContext.Update(categoryModel);
+            _dataContext.Categories.Update(categoryModel);
             await _dataContext.SaveChangesAsync();
 
             TempData["success"] = "Cập nhật danh mục thành công!";
@@ -133,6 +133,9 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return "";
 
+            // Bước 0: Thay thế các ký tự đặc biệt tiếng Việt như Đ/đ
+            name = name.Replace("Đ", "D").Replace("đ", "d");
+
             // Bước 1: Chuẩn hóa Unicode (loại bỏ dấu tiếng Việt)
             string normalized = name.Normalize(NormalizationForm.FormD);
             var sb = new StringBuilder();
@@ -148,7 +151,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             // Bước 2: Chuyển sang chữ thường và loại bỏ ký tự đặc biệt
             slug = slug.ToLowerInvariant();
-            slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");      // chỉ giữ lại chữ, số, khoảng trắng, và -
+            slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");      // chỉ giữ lại chữ, số, khoảng trắng và -
             slug = Regex.Replace(slug, @"\s+", "-");              // thay khoảng trắng bằng dấu gạch ngang
             slug = Regex.Replace(slug, @"-+", "-");               // gộp nhiều dấu - liền nhau thành 1
 

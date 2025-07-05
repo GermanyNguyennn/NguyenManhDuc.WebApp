@@ -246,6 +246,26 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CapacityModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Capacity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Capacities");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CategoryModel", b =>
                 {
                     b.Property<int>("Id")
@@ -283,13 +303,16 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Color")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ColorModel");
+                    b.ToTable("Colors");
                 });
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CompanyModel", b =>
@@ -543,6 +566,35 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductCapacityModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CapacityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CapacityId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductCapacities");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductColorModel", b =>
                 {
                     b.Property<int>("Id")
@@ -553,9 +605,6 @@ namespace NguyenManhDuc.WebApp.Migrations
 
                     b.Property<int>("ColorId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -742,6 +791,9 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyModelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -772,9 +824,13 @@ namespace NguyenManhDuc.WebApp.Migrations
 
                     b.HasIndex("BrandModelId");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("CategoryModelId");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CompanyModelId");
 
                     b.ToTable("Products");
                 });
@@ -798,6 +854,37 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductQuantities");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductVariantModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CapacityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CapacityId");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.SliderModel", b =>
@@ -919,7 +1006,7 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .IsRequired();
 
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithMany("OrderDetail")
+                        .WithMany("OrderDetails")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -938,16 +1025,35 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Navigation("Coupon");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductCapacityModel", b =>
+                {
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CapacityModel", "Capacity")
+                        .WithMany("ProductCapacity")
+                        .HasForeignKey("CapacityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
+                        .WithMany("ProductCapacities")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Capacity");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductColorModel", b =>
                 {
                     b.HasOne("NguyenManhDuc.WebApp.Models.ColorModel", "Color")
-                        .WithMany()
+                        .WithMany("ProductColor")
                         .HasForeignKey("ColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithMany("ProductColor")
+                        .WithMany("ProductColors")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -978,7 +1084,7 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .IsRequired();
 
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithOne("ProductDetailLaptop")
+                        .WithOne("ProductDetailLaptops")
                         .HasForeignKey("NguyenManhDuc.WebApp.Models.ProductDetailLaptopModel", "ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1009,7 +1115,7 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .IsRequired();
 
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithOne("ProductDetailPhone")
+                        .WithOne("ProductDetailPhones")
                         .HasForeignKey("NguyenManhDuc.WebApp.Models.ProductDetailPhoneModel", "ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -1034,21 +1140,25 @@ namespace NguyenManhDuc.WebApp.Migrations
                         .WithMany("Product")
                         .HasForeignKey("BrandModelId");
 
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CategoryModel", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("NguyenManhDuc.WebApp.Models.CategoryModel", null)
                         .WithMany("Product")
                         .HasForeignKey("CategoryModelId");
 
-                    b.HasOne("NguyenManhDuc.WebApp.Models.CategoryModel", "Category")
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CompanyModel", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("NguyenManhDuc.WebApp.Models.CompanyModel", "Company")
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CompanyModel", null)
                         .WithMany("Product")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyModelId");
 
                     b.Navigation("Brand");
 
@@ -1060,10 +1170,37 @@ namespace NguyenManhDuc.WebApp.Migrations
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductQuantityModel", b =>
                 {
                     b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
-                        .WithMany("ProductQuantity")
+                        .WithMany("ProductQuantities")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductVariantModel", b =>
+                {
+                    b.HasOne("NguyenManhDuc.WebApp.Models.CapacityModel", "Capacity")
+                        .WithMany()
+                        .HasForeignKey("CapacityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ColorModel", "Color")
+                        .WithMany()
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NguyenManhDuc.WebApp.Models.ProductModel", "Product")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Capacity");
+
+                    b.Navigation("Color");
 
                     b.Navigation("Product");
                 });
@@ -1078,9 +1215,19 @@ namespace NguyenManhDuc.WebApp.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CapacityModel", b =>
+                {
+                    b.Navigation("ProductCapacity");
+                });
+
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CategoryModel", b =>
                 {
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ColorModel", b =>
+                {
+                    b.Navigation("ProductColor");
                 });
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.CompanyModel", b =>
@@ -1095,15 +1242,19 @@ namespace NguyenManhDuc.WebApp.Migrations
 
             modelBuilder.Entity("NguyenManhDuc.WebApp.Models.ProductModel", b =>
                 {
-                    b.Navigation("OrderDetail");
+                    b.Navigation("OrderDetails");
 
-                    b.Navigation("ProductColor");
+                    b.Navigation("ProductCapacities");
 
-                    b.Navigation("ProductDetailLaptop");
+                    b.Navigation("ProductColors");
 
-                    b.Navigation("ProductDetailPhone");
+                    b.Navigation("ProductDetailLaptops");
 
-                    b.Navigation("ProductQuantity");
+                    b.Navigation("ProductDetailPhones");
+
+                    b.Navigation("ProductQuantities");
+
+                    b.Navigation("ProductVariants");
                 });
 #pragma warning restore 612, 618
         }

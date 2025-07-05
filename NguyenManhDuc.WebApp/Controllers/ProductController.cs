@@ -32,10 +32,14 @@ namespace NguyenManhDuc.WebApp.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _dataContext.Products
-                .Include(p => p.Category)
-                .Include(p => p.Brand)
-                .Include(p => p.Company)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            .Include(p => p.Category)
+            .Include(p => p.Brand)
+            .Include(p => p.Company)
+            .Include(p => p.ProductColors)
+                .ThenInclude(c => c.Color)
+            .Include(p => p.ProductCapacities)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
 
             if (product == null) return NotFound();
 
@@ -47,7 +51,14 @@ namespace NguyenManhDuc.WebApp.Controllers
                     : null,
                 LaptopDetail = product.CategoryId == 2
                     ? await _dataContext.ProductDetailLaptops.FirstOrDefaultAsync(x => x.ProductId == id)
-                    : null
+                    : null,
+                Colors = await _dataContext.ProductColors
+                .Include(x => x.Color)
+                .Where(x => x.ProductId == id && x.Status == 1)
+                .ToListAsync(),
+                        Capacities = await _dataContext.ProductCapacities
+                .Where(x => x.ProductId == id && x.Status == 1)
+                .ToListAsync()
             };
 
             return View(viewModel);

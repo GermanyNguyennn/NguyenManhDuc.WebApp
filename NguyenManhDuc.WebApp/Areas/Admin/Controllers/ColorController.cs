@@ -1,20 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NguyenManhDuc.WebApp.Models;
 using NguyenManhDuc.WebApp.Repository;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
+using System.Drawing.Imaging;
 
 namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class CompanyController : Controller
+    public class ColorController : Controller
     {
         private readonly DataContext _dataContext;
-        public CompanyController(DataContext context)
+
+        public ColorController(DataContext context)
         {
             _dataContext = context;
         }
@@ -24,87 +26,87 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             const int pageSize = 10;
             if (page < 1) page = 1;
 
-            int totalItems = await _dataContext.Companies.CountAsync();
+            int totalItems = await _dataContext.Colors.CountAsync();
             var pager = new Paginate(totalItems, page, pageSize);
 
-            var Companys = await _dataContext.Companies
-                .OrderBy(b => b.Id)
+            var colors = await _dataContext.Colors
+                .OrderBy(c => c.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             ViewBag.Pager = pager;
-            return View(Companys);
+            return View(colors);
         }
 
         public IActionResult Add() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(CompanyModel CompanyModel)
+        public async Task<IActionResult> Add(ColorModel colorModel)
         {
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Dữ liệu không hợp lệ.";
-                return View(CompanyModel);
+                return View(colorModel);
             }
 
-            CompanyModel.Slug = GenerateSlug(CompanyModel.Name);
+            colorModel.Slug = GenerateSlug(colorModel.Color);
 
-            bool slugExists = await _dataContext.Companies
-                .AnyAsync(b => b.Slug == CompanyModel.Slug);
+            bool slugExists = await _dataContext.Colors
+                .AnyAsync(c => c.Slug == colorModel.Slug);
 
             if (slugExists)
             {
-                TempData["error"] = "Công ty đã tồn tại.";
-                return View(CompanyModel);
+                TempData["error"] = "Màu sắc đã tồn tại.";
+                return View(colorModel);
             }
 
-            _dataContext.Companies.Add(CompanyModel);
+            _dataContext.Colors.Add(colorModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm công ty thành công!";
+            TempData["success"] = "Thêm màu sắc thành công!";
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var Company = await _dataContext.Companies.FindAsync(id);
-            if (Company == null)
+            var colors = await _dataContext.Colors.FindAsync(id);
+            if (colors == null)
             {
-                TempData["error"] = "Không tìm thấy công ty.";
+                TempData["error"] = "Không tìm thấy màu sắc.";
                 return RedirectToAction("Index");
             }
 
-            return View(Company);
+            return View(colors);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CompanyModel CompanyModel)
+        public async Task<IActionResult> Edit(ColorModel colorModel)
         {
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Dữ liệu không hợp lệ.";
-                return View(CompanyModel);
+                return View(colorModel);
             }
 
-            CompanyModel.Slug = GenerateSlug(CompanyModel.Name);
+            colorModel.Slug = GenerateSlug(colorModel.Color);
 
-            bool slugExists = await _dataContext.Companies
-                .AnyAsync(b => b.Id != CompanyModel.Id && b.Slug == CompanyModel.Slug);
+            bool slugExists = await _dataContext.Categories
+                .AnyAsync(c => c.Id != colorModel.Id && c.Slug == colorModel.Slug);
 
             if (slugExists)
             {
-                TempData["error"] = "Tên công ty bị trùng với công ty khác.";
-                return View(CompanyModel);
+                TempData["error"] = "Tên màu sắc bị trùng với màu sắc khác.";
+                return View(colorModel);
             }
 
-            _dataContext.Update(CompanyModel);
+            _dataContext.Colors.Update(colorModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật công ty thành công!";
+            TempData["success"] = "Cập nhật màu sắc thành công!";
             return RedirectToAction("Index");
         }
 
@@ -112,17 +114,17 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var Company = await _dataContext.Companies.FindAsync(id);
-            if (Company == null)
+            var colors = await _dataContext.Colors.FindAsync(id);
+            if (colors == null)
             {
-                TempData["error"] = "Không tìm thấy công ty.";
+                TempData["error"] = "Không tìm thấy màu sắc.";
                 return RedirectToAction("Index");
             }
 
-            _dataContext.Companies.Remove(Company);
+            _dataContext.Colors.Remove(colors);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa công ty thành công!";
+            TempData["success"] = "Xóa danh mục thành công!";
             return RedirectToAction("Index");
         }
 
@@ -155,5 +157,6 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             return slug.Trim('-'); // loại bỏ dấu - ở đầu/cuối
         }
+
     }
 }

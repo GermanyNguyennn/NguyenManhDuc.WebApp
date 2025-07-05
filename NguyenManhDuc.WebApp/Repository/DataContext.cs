@@ -16,34 +16,27 @@ namespace NguyenManhDuc.WebApp.Repository
 
             // Cấu hình quan hệ 1-1 giữa Product và ProductDetailPhone, ProductDetailLaptop
             modelBuilder.Entity<ProductModel>()
-                .HasOne(p => p.ProductDetailLaptop)
+                .HasOne(p => p.ProductDetailLaptops)
                 .WithOne(d => d.Product)
                 .HasForeignKey<ProductDetailLaptopModel>(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductModel>()
-                .HasOne(p => p.ProductDetailPhone)
+                .HasOne(p => p.ProductDetailPhones)
                 .WithOne(d => d.Product)
                 .HasForeignKey<ProductDetailPhoneModel>(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Cấu hình quan hệ 1-n giữa Product và ProductQuantity
             modelBuilder.Entity<ProductModel>()
-                .HasMany(p => p.ProductQuantity)
+                .HasMany(p => p.ProductQuantities)
                 .WithOne(q => q.Product)
                 .HasForeignKey(q => q.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Quan hệ 1-n giữa Product và ProductColor
-            modelBuilder.Entity<ProductModel>()
-                .HasMany(p => p.ProductColor)
-                .WithOne(c => c.Product)
-                .HasForeignKey(c => c.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+       
             // Quan hệ 1-n giữa Product và OrderDetail
             modelBuilder.Entity<ProductModel>()
-                .HasMany(p => p.OrderDetail)
+                .HasMany(p => p.OrderDetails)
                 .WithOne(o => o.Product)
                 .HasForeignKey(o => o.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -62,11 +55,29 @@ namespace NguyenManhDuc.WebApp.Repository
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductModel>()
-                .HasOne(p => p.Category)
+                .HasOne(p => p.Company)
                 .WithMany()
                 .HasForeignKey(p => p.CompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Quan hệ 1-n giữa Product và ProductColor
+            modelBuilder.Entity<ProductModel>()
+                .HasMany(p => p.ProductColors)
+                .WithOne(c => c.Product)
+                .HasForeignKey(c => c.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductModel>()
+                .HasMany(p => p.ProductCapacities)
+                .WithOne(c => c.Product)
+                .HasForeignKey(c => c.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductModel>()
+                .HasMany(p => p.ProductVariants)
+                .WithOne(v => v.Product)
+                .HasForeignKey(v => v.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<BrandModel> Brands { get; set; }
@@ -85,5 +96,10 @@ namespace NguyenManhDuc.WebApp.Repository
         public DbSet<ProductDetailPhoneModel> ProductDetailPhones { get; set; }
         public DbSet<ProductDetailLaptopModel> ProductDetailLaptops { get; set; }
         public DbSet<ProductColorModel> ProductColors { get; set; }
+        public DbSet<ProductCapacityModel> ProductCapacities { get; set; }
+        public DbSet<ProductVariantModel> ProductVariants { get; set; }
+        public DbSet<ColorModel> Colors { get; set; }
+        public DbSet<CapacityModel> Capacities { get; set; }
+
     }
 }

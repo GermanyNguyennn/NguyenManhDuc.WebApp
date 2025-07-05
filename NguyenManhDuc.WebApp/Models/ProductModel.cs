@@ -32,11 +32,13 @@ namespace NguyenManhDuc.WebApp.Models
         [FileExtension]
         public IFormFile? ImageUpload { get; set; }
 
-        public ProductDetailPhoneModel? ProductDetailPhone { get; set; }
-        public ProductDetailLaptopModel? ProductDetailLaptop { get; set; }
-        public ICollection<ProductQuantityModel> ProductQuantity { get; set; } = new List<ProductQuantityModel>();
-        public ICollection<ProductColorModel> ProductColor { get; set; } = new List<ProductColorModel>();
-        public ICollection<OrderDetailModel> OrderDetail { get; set; } = new List<OrderDetailModel>();
+        public ProductDetailPhoneModel? ProductDetailPhones { get; set; }
+        public ProductDetailLaptopModel? ProductDetailLaptops { get; set; }
+        public ICollection<ProductQuantityModel> ProductQuantities { get; set; } = new List<ProductQuantityModel>();
+        public ICollection<ProductColorModel> ProductColors { get; set; } = new List<ProductColorModel>();
+        public ICollection<ProductCapacityModel> ProductCapacities { get; set; } = new List<ProductCapacityModel>();
+        public ICollection<ProductVariantModel> ProductVariants { get; set; } = new List<ProductVariantModel>();
+        public ICollection<OrderDetailModel> OrderDetails { get; set; } = new List<OrderDetailModel>();
 
     }
 }

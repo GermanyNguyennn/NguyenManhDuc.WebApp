@@ -7,7 +7,9 @@ namespace NguyenManhDuc.WebApp.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string Color { get; set; }
         public string? Code { get; set; }
+        public string? Slug { get; set; }
+        public ICollection<ProductColorModel> ProductColor { get; set; } = new List<ProductColorModel>();
     }
 }

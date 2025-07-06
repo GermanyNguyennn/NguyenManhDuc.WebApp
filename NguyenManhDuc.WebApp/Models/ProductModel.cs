@@ -16,10 +16,11 @@ namespace NguyenManhDuc.WebApp.Models
         public decimal ImportPrice { get; set; }
         public int Quantity { get; set; }
         public int Sold { get; set; }
-        public string? Slug { get; set; }
+        public string Slug { get; set; } = string.Empty;
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
         public int CompanyId { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [ForeignKey("CategoryId")]
         public CategoryModel? Category { get; set; }
@@ -34,7 +35,6 @@ namespace NguyenManhDuc.WebApp.Models
 
         public ProductDetailPhoneModel? ProductDetailPhones { get; set; }
         public ProductDetailLaptopModel? ProductDetailLaptops { get; set; }
-        public ICollection<ProductQuantityModel> ProductQuantities { get; set; } = new List<ProductQuantityModel>();
         public ICollection<ProductColorModel> ProductColors { get; set; } = new List<ProductColorModel>();
         public ICollection<ProductCapacityModel> ProductCapacities { get; set; } = new List<ProductCapacityModel>();
         public ICollection<ProductVariantModel> ProductVariants { get; set; } = new List<ProductVariantModel>();

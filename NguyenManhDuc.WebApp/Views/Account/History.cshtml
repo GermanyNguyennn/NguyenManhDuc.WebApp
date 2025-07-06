@@ -24,7 +24,7 @@
                 <th scope="col">Id</th>
                 <th scope="col">Mã Đơn Hàng</th>
                 <th scope="col">Tài Khoản</th>
-                <th scope="col">Ngày Mua</th>
+                <th scope="col">Ngày Mua Hàng</th>
                 <th scope="col">Trạng Thái</th>
                 <th scope="col">Phương Thức Thanh Toán</th>
             </tr>
@@ -62,7 +62,7 @@
                         }
                     </td>
                     <td>
-                        <a asp-controller="Account" asp-action="View" asp-route-OrderCode="@item.OrderCode" class="btn btn-warning btn-sm">Xem</a>
+                        <a asp-controller="Account" asp-action="ViewOrder" asp-route-OrderCode="@item.OrderCode" class="btn btn-warning btn-sm">Xem</a>
                     </td>
                 </tr>
             }

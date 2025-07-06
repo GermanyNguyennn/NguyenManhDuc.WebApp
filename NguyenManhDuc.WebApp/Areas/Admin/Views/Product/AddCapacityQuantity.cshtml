@@ -6,23 +6,32 @@
     var productId = ViewBag.ProductId;
 }
 
-<form asp-action="AddCapacityQuantity" method="post">
+<form asp-action="AddCapacityQuantity" method="POST" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
-    <input type="hidden" name="ProductId" value="@productId" />
+    <input asp-for="ProductId" type="hidden" value="@productId" />
 
     <div class="form-group">
         <label>Dung lượng</label>
         <select asp-for="CapacityId" class="form-control" asp-items="@(new SelectList(capacities, "Id", "Capacity"))">
-            <option value="">-- Chọn dung lượng --</option>
+            <option value="">-- Chọn Dung Lượng --</option>
         </select>
         <span asp-validation-for="CapacityId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Số lượng</label>
+        <label>Số Lượng</label>
         <input asp-for="Quantity" class="form-control" />
         <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Trạng Thái</label>
+        <select asp-for="Status" class="form-control">
+            <option value="1">Hiển thị</option>
+            <option value="0">Ẩn</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
     <div class="form-group">

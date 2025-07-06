@@ -55,22 +55,22 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             var filteredOrderDetails = _dataContext.OrderDetails
                 .Where(od =>
-                    (!fromDate.HasValue || od.Order.CreatedDate.Date >= fromDate.Value.Date) &&
-                    (!toDate.HasValue || od.Order.CreatedDate.Date <= toDate.Value.Date) &&
-                    (!categoryId.HasValue || od.Product.CategoryId == categoryId) &&
-                    (!brandId.HasValue || od.Product.BrandId == brandId)
+                    (!fromDate.HasValue || od.Order!.CreatedDate.Date >= fromDate.Value.Date) &&
+                    (!toDate.HasValue || od.Order!.CreatedDate.Date <= toDate.Value.Date) &&
+                    (!categoryId.HasValue || od.Product!.CategoryId == categoryId) &&
+                    (!brandId.HasValue || od.Product!.BrandId == brandId)
                 )
                 .Select(od => new
                 {
                     od.ProductId,
-                    ProductName = od.Product.Name,
+                    ProductName = od.Product!.Name,
                     ProductImage = od.Product.Image,
                     ProductImportPrice = od.Product.ImportPrice,
 
                     od.Price,
                     od.Quantity,
 
-                    OrderId = od.Order.Id,
+                    OrderId = od.Order!.Id,
                     OrderCreatedDate = od.Order.CreatedDate,
                     CouponId = od.Order.CouponId,
                     Coupon = od.Order.Coupon,

@@ -9,6 +9,6 @@ namespace NguyenManhDuc.WebApp.Models
         public string? OrderId { get; set; }
         public string? OrderInfo { get; set; }
         public decimal Amount { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

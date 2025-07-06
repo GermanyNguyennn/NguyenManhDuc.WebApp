@@ -6,27 +6,36 @@
     var productId = ViewBag.ProductId;
 }
 
-<form asp-action="EditCapacityQuantity" method="post">
+<form asp-action="EditCapacityQuantity" method="POST" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
-    <input type="hidden" name="ProductId" value="@productId" />
+    <input asp-for="ProductId" type="hidden" />
 
     <div class="form-group">
-        <label>Dung lượng</label>
+        <label>Dung Lượng</label>
         <select asp-for="CapacityId" class="form-control" asp-items="@(new SelectList(capacities, "Id", "Capacity"))">
-            <option value="">-- Chọn dung lượng --</option>
+            <option value="">-- Chọn Dung Lượng --</option>
         </select>
         <span asp-validation-for="CapacityId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Số lượng</label>
+        <label>Số Lượng</label>
         <input asp-for="Quantity" class="form-control" />
         <span asp-validation-for="Quantity" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-warning btn-sm">Thêm</button>
+        <label>Trạng Thái</label>
+        <select asp-for="Status" class="form-control">
+            <option value="1">Hiển thị</option>
+            <option value="0">Ẩn</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-warning btn-sm">Sửa</button>
         <a asp-action="ManageCapacityQuantity" asp-route-id="@productId" class="btn btn-warning btn-sm">Quay lại</a>
     </div>
 </form>

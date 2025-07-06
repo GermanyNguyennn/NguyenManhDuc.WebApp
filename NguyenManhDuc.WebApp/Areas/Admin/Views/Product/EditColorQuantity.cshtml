@@ -6,27 +6,36 @@
     var productId = ViewBag.ProductId;
 }
 
-<form asp-action="EditColorQuantity" method="post">
+<form asp-action="EditColorQuantity" method="POST" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
-    <input type="hidden" name="ProductId" value="@productId" />
+    <input asp-for="ProductId" type="hidden" />
 
     <div class="form-group">
-        <label>Màu sắc</label>
+        <label>Màu Sắc</label>
         <select asp-for="ColorId" class="form-control" asp-items="@(new SelectList(colors, "Id", "Color"))">
-            <option value="">-- Chọn màu --</option>
+            <option value="">-- Chọn Màu Sắc --</option>
         </select>
         <span asp-validation-for="ColorId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Số lượng</label>
+        <label>Số Lượng</label>
         <input asp-for="Quantity" class="form-control" />
         <span asp-validation-for="Quantity" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-warning btn-sm">Thêm</button>
+        <label>Trạng Thái</label>
+        <select asp-for="Status" class="form-control">
+            <option value="1">Hiển thị</option>
+            <option value="0">Ẩn</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-warning btn-sm">Sửa</button>
         <a asp-action="ManageColorQuantity" asp-route-id="@productId" class="btn btn-warning btn-sm">Quay lại</a>
     </div>
 </form>

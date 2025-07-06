@@ -64,7 +64,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(productModel);
             }
 
-            productModel.Slug = GenerateSlug(productModel.Name);
+            productModel.Slug = GenerateSlug(productModel.Name!);
 
             if (await _dataContext.Products.AnyAsync(p => p.Slug == productModel.Slug))
             {
@@ -108,13 +108,13 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(productModel);
             }
 
-            existingProduct.Slug = productModel.Name.Trim().Replace(" ", "-");
+            existingProduct.Slug = productModel.Name!.Trim().Replace(" ", "-");
 
             if (productModel.ImageUpload != null)
             {
                 try
                 {
-                    DeleteImage(existingProduct.Image);
+                    DeleteImage(existingProduct.Image!);
                     existingProduct.Image = await SaveImageAsync(productModel.ImageUpload);
                 }
                 catch (Exception ex)
@@ -128,6 +128,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             existingProduct.Description = productModel.Description;
             existingProduct.Price = productModel.Price;
             existingProduct.ImportPrice = productModel.ImportPrice;
+            existingProduct.Quantity = productModel.Quantity;
             existingProduct.CategoryId = productModel.CategoryId;
             existingProduct.BrandId = productModel.BrandId;
             existingProduct.CompanyId = productModel.CompanyId;
@@ -144,59 +145,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var product = await _dataContext.Products.FindAsync(id);
             if (product == null) return NotFound();
 
-            DeleteImage(product.Image);
+            DeleteImage(product.Image!);
 
             _dataContext.Products.Remove(product);
             await _dataContext.SaveChangesAsync();
 
             TempData["success"] = "Xóa sản phẩm thành công.";
             return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> IndexQuantity(int id)
-        {
-            ViewBag.ProductByQuantity = await _dataContext.ProductQuantities
-                .Where(pq => pq.ProductId == id)
-                .ToListAsync();
-
-            ViewBag.ProductId = id;
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddQuantity(ProductQuantityModel model)
-        {
-            var product = await _dataContext.Products.FindAsync(model.ProductId);
-            if (product == null) return NotFound();
-
-            product.Quantity += model.Quantity;
-
-            _dataContext.ProductQuantities.Add(model);
-            await _dataContext.SaveChangesAsync();
-
-            TempData["success"] = "Cập nhật số lượng thành công.";
-            return RedirectToAction("IndexQuantity", new { id = model.ProductId });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteQuantity(int id)
-        {
-            var quantity = await _dataContext.ProductQuantities.FindAsync(id);
-            if (quantity == null) return NotFound();
-
-            var product = await _dataContext.Products.FindAsync(quantity.ProductId);
-            if (product == null) return NotFound();
-
-            product.Quantity = Math.Max(0, product.Quantity - quantity.Quantity);
-            _dataContext.ProductQuantities.Remove(quantity);
-            await _dataContext.SaveChangesAsync();
-
-            TempData["success"] = "Xóa số lượng thành công.";
-            return RedirectToAction("IndexQuantity", new { id = quantity.ProductId });
-        }
+        }       
 
         [HttpPost]
         public async Task<IActionResult> Search(string searchTerm)
@@ -207,7 +163,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var products = await _dataContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
-                .Where(p => p.Name.Contains(searchTerm))
+                .Where(p => p.Name!.Contains(searchTerm))
                 .ToListAsync();
 
             ViewBag.Keyword = searchTerm;
@@ -293,8 +249,9 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDetail(IFormCollection form)
         {
-            int categoryId = int.Parse(form["CategoryId"]);
-            int productId = int.Parse(form["ProductId"]);
+            int categoryId = int.Parse(form["CategoryId"]!);
+
+            int productId = int.Parse(form["ProductId"]!);
 
             if (categoryId == 1)
             {
@@ -309,21 +266,21 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
                 detail.ProductId = productId;
                 detail.CategoryId = categoryId;
-                detail.BrandId = int.Parse(form["BrandId"]);
-                detail.CompanyId = int.Parse(form["CompanyId"]);
-                detail.ScreenSize = form["ScreenSize"];
-                detail.DisplayTechnology = form["DisplayTechnology"];
-                detail.RearCamera = form["RearCamera"];
-                detail.FrontCamera = form["FrontCamera"];
-                detail.ChipSet = form["ChipSet"];
+                detail.BrandId = int.Parse(form["BrandId"]!);
+                detail.CompanyId = int.Parse(form["CompanyId"]!);
+                detail.ScreenSize = form["ScreenSize"]!;
+                detail.DisplayTechnology = form["DisplayTechnology"]!;
+                detail.RearCamera = form["RearCamera"]!;
+                detail.FrontCamera = form["FrontCamera"]!;
+                detail.ChipSet = form["ChipSet"]!;
                 detail.NFC = form["NFC"].ToString() == "true";
-                detail.RAMCapacity = form["RAMCapacity"];
-                detail.InternalStorage = form["InternalStorage"];
-                detail.SimCard = form["SimCard"];
-                detail.OperatingSystem = form["OperatingSystem"];
-                detail.DisplayResolution = form["DisplayResolution"];
-                detail.DisplayFeatures = form["DisplayFeatures"];
-                detail.CPUType = form["CPUType"];
+                detail.RAMCapacity = form["RAMCapacity"]!;
+                detail.InternalStorage = form["InternalStorage"]!;
+                detail.SimCard = form["SimCard"]!;
+                detail.OperatingSystem = form["OperatingSystem"]!;
+                detail.DisplayResolution = form["DisplayResolution"]!;
+                detail.DisplayFeatures = form["DisplayFeatures"]!;
+                detail.CPUType = form["CPUType"]!;
 
                 await _dataContext.SaveChangesAsync();
                 TempData["success"] = "Lưu chi tiết điện thoại thành công!";
@@ -341,20 +298,20 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
                 detail.ProductId = productId;
                 detail.CategoryId = categoryId;
-                detail.BrandId = int.Parse(form["BrandId"]);
-                detail.CompanyId = int.Parse(form["CompanyId"]);
-                detail.GraphicsCardType = form["GraphicsCardType"];
-                detail.RAMCapacity = form["RAMCapacity"];
-                detail.RAMType = form["RAMType"];
-                detail.NumberOfRAMSlots = form["NumberOfRAMSlots"];
-                detail.HardDrive = form["HardDrive"];
-                detail.ScreenSize = form["ScreenSize"];
-                detail.ScreenTechnology = form["ScreenTechnology"];
-                detail.Battery = form["Battery"];
-                detail.OperatingSystem = form["OperatingSystem"];
-                detail.ScreenResolution = form["ScreenResolution"];
-                detail.CPUType = form["CPUType"];
-                detail.Interface = form["Interface"];
+                detail.BrandId = int.Parse(form["BrandId"]!);
+                detail.CompanyId = int.Parse(form["CompanyId"]!);
+                detail.GraphicsCardType = form["GraphicsCardType"]!;
+                detail.RAMCapacity = form["RAMCapacity"]!;
+                detail.RAMType = form["RAMType"]!;
+                detail.NumberOfRAMSlots = form["NumberOfRAMSlots"]!;
+                detail.HardDrive = form["HardDrive"]!;
+                detail.ScreenSize = form["ScreenSize"]!;
+                detail.ScreenTechnology = form["ScreenTechnology"]!;
+                detail.Battery = form["Battery"]!;
+                detail.OperatingSystem = form["OperatingSystem"]!;
+                detail.ScreenResolution = form["ScreenResolution"]!;
+                detail.CPUType = form["CPUType"]!;
+                detail.Interface = form["Interface"]!;
 
                 await _dataContext.SaveChangesAsync();
                 TempData["success"] = "Lưu chi tiết laptop thành công!";
@@ -410,7 +367,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 .Where(x => x.ProductId == id)
                 .Select(x => new ColorStockViewModel
                 {
-                    ColorName = x.Color!.Color,
+                    ColorName = x.Color!.Color!,
                     Quantity = x.Quantity
                 }).ToListAsync();
 
@@ -418,7 +375,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 .Where(x => x.ProductId == id)
                 .Select(x => new CapacityStockViewModel
                 {
-                    CapacityName = x.Capacity!.Capacity,
+                    CapacityName = x.Capacity!.Capacity!,
                     Quantity = x.Quantity
                 }).ToListAsync();
 
@@ -426,8 +383,8 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 .Where(x => x.ProductId == id)
                 .Select(x => new VariantStockViewModel
                 {
-                    ColorName = x.Color!.Color,
-                    CapacityName = x.Capacity!.Capacity,
+                    ColorName = x.Color!.Color!,
+                    CapacityName = x.Capacity!.Capacity!,
                     Quantity = x.Quantity
                 }).ToListAsync();
 
@@ -477,6 +434,19 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(model);
             }
 
+            // ✅ Thêm đoạn này để kiểm tra khóa ngoại có tồn tại không
+            var productExists = await _dataContext.Products.AnyAsync(p => p.Id == model.ProductId);
+            var colorExists = await _dataContext.Colors.AnyAsync(c => c.Id == model.ColorId);
+
+            if (!productExists || !colorExists)
+            {
+                TempData["error"] = "Sản phẩm hoặc màu không tồn tại!";
+                ViewBag.ProductId = model.ProductId;
+                ViewBag.Colors = await _dataContext.Colors.ToListAsync();
+                return View(model);
+            }
+
+            // Kiểm tra trùng màu cho sản phẩm
             bool exists = await _dataContext.ProductColors
                 .AnyAsync(pc => pc.ProductId == model.ProductId && pc.ColorId == model.ColorId);
 
@@ -490,6 +460,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             try
             {
+                model.Id = 0;
                 _dataContext.ProductColors.Add(model);
                 await _dataContext.SaveChangesAsync();
 
@@ -498,7 +469,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["error"] = "Lỗi khi lưu CSDL: " + ex.Message;
+                TempData["error"] = "Lỗi khi lưu CSDL: " + (ex.InnerException?.Message ?? ex.Message);
                 ViewBag.ProductId = model.ProductId;
                 ViewBag.Colors = await _dataContext.Colors.ToListAsync();
                 return View(model);
@@ -510,6 +481,8 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             var item = await _dataContext.ProductColors.FindAsync(id);
             if (item == null) return NotFound();
+
+            ViewBag.Colors = await _dataContext.Colors.ToListAsync();
             return View(item);
         }
 
@@ -517,12 +490,34 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditColorQuantity(ProductColorModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Colors = await _dataContext.Colors.ToListAsync();
+                return View(model);
+            }
 
             var item = await _dataContext.ProductColors.FindAsync(model.Id);
-            if (item == null) return NotFound();
+            if (item == null)
+            {
+                TempData["error"] = "Không tìm thấy bản ghi cần sửa.";
+                return RedirectToAction("ManageColorQuantity", new { id = model.ProductId });
+            }
 
+            // Kiểm tra tính hợp lệ của ProductId và ColorId
+            var productExists = await _dataContext.Products.AnyAsync(p => p.Id == model.ProductId);
+            var colorExists = await _dataContext.Colors.AnyAsync(c => c.Id == model.ColorId);
+
+            if (!productExists || !colorExists)
+            {
+                TempData["error"] = "Sản phẩm hoặc màu không tồn tại!";
+                ViewBag.Colors = await _dataContext.Colors.ToListAsync();
+                return View(model);
+            }
+
+            // Chỉ cập nhật số lượng và trạng thái (không cập nhật ColorId/ProductId vì là khóa chính logic)
             item.Quantity = model.Quantity;
+            item.Status = model.Status;
+
             await _dataContext.SaveChangesAsync();
 
             TempData["success"] = "Cập nhật số lượng màu thành công!";
@@ -554,7 +549,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddCapacityQuantity(int id) // id là ProductId
+        public async Task<IActionResult> AddCapacityQuantity(int id)
         {
             var product = await _dataContext.Products.FindAsync(id);
             if (product == null) return NotFound();
@@ -577,6 +572,19 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(model);
             }
 
+            // ✅ Kiểm tra Product và Capacity có tồn tại không
+            var productExists = await _dataContext.Products.AnyAsync(p => p.Id == model.ProductId);
+            var capacityExists = await _dataContext.Capacities.AnyAsync(c => c.Id == model.CapacityId);
+
+            if (!productExists || !capacityExists)
+            {
+                TempData["error"] = "Sản phẩm hoặc dung lượng không tồn tại!";
+                ViewBag.ProductId = model.ProductId;
+                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                return View(model);
+            }
+
+            // ✅ Kiểm tra trùng dung lượng
             bool exists = await _dataContext.ProductCapacities
                 .AnyAsync(pc => pc.ProductId == model.ProductId && pc.CapacityId == model.CapacityId);
 
@@ -590,6 +598,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             try
             {
+                model.Id = 0;
                 _dataContext.ProductCapacities.Add(model);
                 await _dataContext.SaveChangesAsync();
 
@@ -598,12 +607,13 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["error"] = "Lỗi khi lưu CSDL: " + ex.Message;
+                TempData["error"] = "Lỗi khi lưu CSDL: " + (ex.InnerException?.Message ?? ex.Message);
                 ViewBag.ProductId = model.ProductId;
                 ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
                 return View(model);
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> EditCapacityQuantity(int id)
@@ -611,6 +621,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var item = await _dataContext.ProductCapacities.FindAsync(id);
             if (item == null) return NotFound();
 
+            ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
             return View(item);
         }
 
@@ -620,13 +631,30 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
                 return View(model);
             }
 
             var item = await _dataContext.ProductCapacities.FindAsync(model.Id);
-            if (item == null) return NotFound();
+            if (item == null)
+            {
+                TempData["error"] = "Không tìm thấy bản ghi cần sửa.";
+                return RedirectToAction("ManageCapacityQuantity", new { id = model.ProductId });
+            }
+
+            var productExists = await _dataContext.Products.AnyAsync(p => p.Id == model.ProductId);
+            var capacityExists = await _dataContext.Capacities.AnyAsync(c => c.Id == model.CapacityId);
+
+            if (!productExists || !capacityExists)
+            {
+                TempData["error"] = "Sản phẩm hoặc dung lượng không tồn tại!";
+                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                return View(model);
+            }
 
             item.Quantity = model.Quantity;
+            item.Status = model.Status;
+
             await _dataContext.SaveChangesAsync();
 
             TempData["success"] = "Cập nhật số lượng dung lượng thành công!";

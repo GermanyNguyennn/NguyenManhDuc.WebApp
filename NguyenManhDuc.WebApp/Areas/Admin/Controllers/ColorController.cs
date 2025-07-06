@@ -51,7 +51,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(colorModel);
             }
 
-            colorModel.Slug = GenerateSlug(colorModel.Color);
+            colorModel.Slug = GenerateSlug(colorModel.Color!);
 
             bool slugExists = await _dataContext.Colors
                 .AnyAsync(c => c.Slug == colorModel.Slug);
@@ -92,7 +92,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(colorModel);
             }
 
-            colorModel.Slug = GenerateSlug(colorModel.Color);
+            colorModel.Slug = GenerateSlug(colorModel.Color!);
 
             bool slugExists = await _dataContext.Categories
                 .AnyAsync(c => c.Id != colorModel.Id && c.Slug == colorModel.Slug);

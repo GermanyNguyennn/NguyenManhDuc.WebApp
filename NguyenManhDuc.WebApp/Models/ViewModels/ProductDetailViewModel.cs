@@ -2,7 +2,7 @@
 {
     public class ProductDetailViewModel
     {
-        public ProductModel Product { get; set; }
+        public ProductModel? Product { get; set; }
         public ProductDetailPhoneModel? PhoneDetail { get; set; }
         public ProductDetailLaptopModel? LaptopDetail { get; set; }
 

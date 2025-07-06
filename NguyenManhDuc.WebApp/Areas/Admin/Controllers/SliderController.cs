@@ -85,10 +85,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (model.ImageUpload != null)
             {
-                // Xóa ảnh cũ
-                await DeleteImageAsync(existing.Image);
-
-                // Lưu ảnh mới
+                await DeleteImageAsync(existing.Image!);
                 existing.Image = await SaveImageAsync(model.ImageUpload);
             }
 
@@ -109,7 +106,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var slider = await _dataContext.Sliders.FindAsync(id);
             if (slider == null) return NotFound();
 
-            await DeleteImageAsync(slider.Image);
+            await DeleteImageAsync(slider.Image!);
 
             _dataContext.Sliders.Remove(slider);
             await _dataContext.SaveChangesAsync();

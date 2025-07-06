@@ -34,7 +34,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var pager = new Paginate(count, page, pageSize);
 
             var orders = await _dataContext.Orders
-                .OrderBy(o => o.Id)
+                .OrderByDescending(o => o.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -44,7 +44,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> View(string orderCode)
+        public async Task<IActionResult> ViewOrder(string orderCode)
         {
             if (string.IsNullOrWhiteSpace(orderCode))
                 return BadRequest("Mã đơn hàng không hợp lệ.");
@@ -70,7 +70,6 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateView(string orderCode, int status)
         {
             if (string.IsNullOrWhiteSpace(orderCode))
@@ -131,9 +130,9 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             var viewModel = new CartViewModel
             {
-                FullName = order.FullName,
-                Email = order.Email,
-                PhoneNumber = order.PhoneNumber,
+                FullName = order.FullName!,
+                Email = order.Email!,
+                PhoneNumber = order.PhoneNumber!,
                 Information = new InformationViewModel
                 {
                     Address = order.Address,

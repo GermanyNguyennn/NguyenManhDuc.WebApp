@@ -46,7 +46,7 @@
 
             @{
                 decimal discountValue = Convert.ToDecimal(ViewBag.DiscountValue ?? 0);
-                string discountType = ViewBag.DiscountType.ToString();
+                string discountType = ViewBag.DiscountType?.ToString() ?? "";
                 decimal discountAmount = 0;
                 decimal finalTotal = totalAmount;
 
@@ -82,11 +82,11 @@
                 <td>
                     @if (@ViewBag.Status != 3)
                     {
-                            <select class="form-control select-update-order">
-                                <option value="1">Đã Đặt Hàng</option>
-                                <option value="2">Đã Giao Hàng</option>
-                                <option value="0">Đã Huỷ</option>
-                            </select>
+                        <select class="form-control select-update-order">
+                            <option value="1">Đã Đặt Hàng</option>
+                            <option value="2">Đã Giao Hàng</option>
+                            <option value="0">Đã Huỷ</option>
+                        </select>
                     }
                 </td>
             </tr>
@@ -95,32 +95,32 @@
 </div>
 
 @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('.select-update-order').change(function () {
-                    var status = $(this).val();
-                    var orderCode = $('.getId').val();
+    <script>
+        $(document).ready(function () {
+            $('.select-update-order').change(function () {
+                var status = $(this).val();
+                var orderCode = $('.getId').val();
 
-                    $.ajax({
-                        type: "POST",
-                        url: "@Url.Action("UpdateView")",
-                        data: { status: status, orderCode: orderCode },
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("UpdateView")",
+                    data: { status: status, orderCode: orderCode },
 
-                        success: function (result) {
-                            if (result.success) {
-                                Swal.fire({
-                                    title: "Update Status Successfully!!!",
-                                    icon: "success"
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: "Update Status Failed!!!",
-                                    icon: "success"
-                                });
-                            }
+                    success: function (result) {
+                        if (result.success) {
+                            Swal.fire({
+                                title: "Cập Nhật Trạng Thái Đơn Hàng Thành Công.",
+                                icon: "success"
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Cập Nhật Trạng Thái Đơn Hàng Thất Bại.",
+                                icon: "error"
+                            });
                         }
-                    });
+                    }
                 });
             });
-        </script>
+        });
+    </script>
 }

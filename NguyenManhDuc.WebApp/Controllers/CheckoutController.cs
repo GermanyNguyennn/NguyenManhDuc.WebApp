@@ -42,18 +42,22 @@ namespace NguyenManhDuc.WebApp.Controllers
 
         public IActionResult Index() => View();
 
-        [Authorize]
         public async Task<IActionResult> Checkout(string PaymentMethod, string PaymentId)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            if (userEmail == null) return RedirectToAction("Login", "Account");
+            var userId = _userManager.GetUserId(User);
+            if (userEmail == null || userId == null)
+                return RedirectToAction("Login", "Account");
 
-            var cart = HttpContext.Session.GetJson<List<CartModel>>("Cart") ?? new();
+            var cart = await _dataContext.Carts
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
+
             var orderCode = Guid.NewGuid().ToString();
+            int? couponId = null;
             var couponCode = HttpContext.Session.GetString("AppliedCoupon");
             var discountAmount = decimal.TryParse(HttpContext.Session.GetString("DiscountAmount"), out var parsedDiscount) ? parsedDiscount : 0;
-            int? couponId = null;
 
             if (!string.IsNullOrEmpty(couponCode))
             {
@@ -68,22 +72,24 @@ namespace NguyenManhDuc.WebApp.Controllers
                 }
             }
 
-            var user = await _userManager.Users.Include(u => u.Information).FirstOrDefaultAsync(u => u.UserName == userName);
+            var user = await _userManager.Users
+                .Include(u => u.Information)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
             var information = user?.Information;
 
             var orderItem = new OrderModel
             {
                 OrderCode = orderCode,
-                UserName = userName,
+                UserName = userName!,
                 PaymentMethod = PaymentMethod == "COD" ? "COD" : $"{PaymentMethod} {PaymentId}",
-                CreatedDate = DateTime.Now,
                 Status = 1,
-                CouponCode = couponCode,
                 CouponId = couponId,
+                CouponCode = couponCode,
 
-                FullName = information?.FullName,
-                Email = user?.Email,
-                PhoneNumber = user?.PhoneNumber,
+                FullName = information?.FullName ?? userName!,
+                Email = user?.Email ?? userEmail,
+                PhoneNumber = user?.PhoneNumber ?? "",
                 Address = information?.Address ?? "",
                 City = await _locationService.GetCityNameById(information?.City ?? ""),
                 District = await _locationService.GetDistrictNameById(information?.City ?? "", information?.District ?? ""),
@@ -102,7 +108,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 var product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
                 if (product == null || product.Quantity < item.Quantity)
                 {
-                    TempData["error"] = $"Sản Phẩm '{item.ProductName}' Không Đủ Số Lượng.";
+                    TempData["error"] = $"Sản phẩm '{item.ProductName}' không đủ số lượng.";
                     return RedirectToAction("Index", "Cart");
                 }
 
@@ -113,7 +119,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 {
                     OrderId = orderItem.Id,
                     OrderCode = orderCode,
-                    UserName = userName,
+                    UserName = userName!,
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     Price = item.Price
@@ -121,7 +127,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
                 emailItems.Add(new EmailOrderItemViewModel
                 {
-                    ProductName = product.Name,
+                    ProductName = item.ProductName,
                     Quantity = item.Quantity,
                     Price = item.Price
                 });
@@ -130,15 +136,20 @@ namespace NguyenManhDuc.WebApp.Controllers
             }
 
             _dataContext.OrderDetails.AddRange(orderDetails);
+            await _dataContext.SaveChangesAsync(); // Lưu OrderDetail + Product update
+
+            // Xoá giỏ hàng
+            _dataContext.Carts.RemoveRange(cart);
             await _dataContext.SaveChangesAsync();
 
-            HttpContext.Session.Remove("Cart");
+            // Xoá mã giảm giá đã dùng
             HttpContext.Session.Remove("AppliedCoupon");
             HttpContext.Session.Remove("DiscountAmount");
 
-            await SendOrderEmails(userEmail, userName, orderCode, emailItems, totalAmount, couponCode, discountAmount);
+            // Gửi email xác nhận
+            await SendOrderEmails(userEmail, userName!, orderCode, emailItems, totalAmount, couponCode, discountAmount);
 
-            TempData["success"] = "Thanh Toán Thành công!";
+            TempData["success"] = "Thanh toán thành công!";
             return RedirectToAction("Index", "Home");
         }
 
@@ -149,7 +160,6 @@ namespace NguyenManhDuc.WebApp.Controllers
             {
                 OrderCode = orderCode,
                 UserName = userName,
-                CreatedDate = DateTime.Now,
                 Items = items,
                 TotalAmount = totalAmount,
                 CouponCode = couponCode,
@@ -163,7 +173,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             foreach (var admin in admins)
             {
                 var adminHtml = await _emailRenderer.RenderAsync("AdminEmail.cshtml", viewModel);
-                await _emailSender.SendEmailAsync(admin.Email, "Đơn Hàng Mới", adminHtml);
+                await _emailSender.SendEmailAsync(admin.Email!, "Đơn Hàng Mới", adminHtml);
             }
         }
 
@@ -175,7 +185,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var resultCode = query["resultCode"];
             var orderId = query["orderId"];
             var orderInfo = query["orderInfo"];
-            var amount = decimal.Parse(query["amount"]);
+            var amount = decimal.Parse(query["amount"]!);
 
             _ = _moMoService.PaymentExecuteAsync(query);
 
@@ -186,13 +196,12 @@ namespace NguyenManhDuc.WebApp.Controllers
                     OrderId = orderId,
                     OrderInfo = orderInfo,
                     Amount = amount,
-                    CreatedDate = DateTime.Now
                 };
 
                 _dataContext.Add(momoModel);
                 await _dataContext.SaveChangesAsync();
 
-                await Checkout("MoMo", orderId);
+                await Checkout("MoMo", orderId!);
 
                 return View(new MoMoInformationModel
                 {
@@ -220,13 +229,12 @@ namespace NguyenManhDuc.WebApp.Controllers
                     OrderId = response.OrderId,
                     OrderInfo = response.OrderInfo,
                     Amount = response.Amount,
-                    CreatedDate = DateTime.Now
                 };
 
                 _dataContext.Add(vnPayModel);
                 await _dataContext.SaveChangesAsync();
 
-                await Checkout(response.PaymentMethod, response.OrderId);
+                await Checkout(response.PaymentMethod!, response.OrderId!);
 
                 return View(new VNPayInformationModel
                 {

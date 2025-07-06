@@ -114,7 +114,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             // Xóa logo nếu không phải mặc định
             if (!string.Equals(contact.LogoImage, "null.jpg", StringComparison.OrdinalIgnoreCase))
             {
-                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "media/logo", contact.LogoImage);
+                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "media/logo", contact.LogoImage!);
                 if (System.IO.File.Exists(filePath))
                     System.IO.File.Delete(filePath);
             }

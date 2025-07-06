@@ -22,61 +22,15 @@ namespace NguyenManhDuc.WebApp.Controllers
             _userManager = userManager;
             _locationService = locationService;
         }
-
-        private List<CartModel> GetCart()
-        {
-            return HttpContext.Session.GetJson<List<CartModel>>("Cart") ?? new();
-        }
-
-        private void SaveCart(List<CartModel> cart)
-        {
-            if (cart == null || !cart.Any())
-            {
-                HttpContext.Session.Remove("Cart");
-                HttpContext.Session.Remove("AppliedCoupon");
-                HttpContext.Session.Remove("DiscountAmount");
-            }
-            else
-            {
-                HttpContext.Session.SetJson("Cart", cart);
-            }
-        }
-
-        private void RecalculateDiscount()
-        {
-            var cart = GetCart();
-            if (!cart.Any()) return;
-
-            var couponCode = HttpContext.Session.GetString("AppliedCoupon");
-            if (string.IsNullOrEmpty(couponCode)) return;
-
-            var coupon = _dataContext.Coupons.FirstOrDefault(c =>
-                c.CouponCode == couponCode &&
-                c.Status == 1 &&
-                c.Quantity > 0 &&
-                c.StartDate <= DateTime.Now &&
-                c.EndDate >= DateTime.Now);
-
-            if (coupon == null)
-            {
-                HttpContext.Session.Remove("AppliedCoupon");
-                HttpContext.Session.Remove("DiscountAmount");
-                return;
-            }
-
-            var total = cart.Sum(x => x.Quantity * x.Price);
-            var discount = coupon.DiscountType == DiscountType.Percent
-                ? (total * coupon.DiscountValue) / 100
-                : coupon.DiscountValue;
-
-            HttpContext.Session.SetString("DiscountAmount", discount.ToString());
-        }
-
+     
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
-            var cart = GetCart();
+            var user = await _userManager.FindByIdAsync(userId!);
+
+            var cart = await _dataContext.Carts
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
 
             var information = await _dataContext.Information.FirstOrDefaultAsync(x => x.UserId == userId);
 
@@ -90,9 +44,9 @@ namespace NguyenManhDuc.WebApp.Controllers
                 Information = new InformationViewModel
                 {
                     Address = information?.Address ?? "",
-                    City = information != null ? await _locationService.GetCityNameById(information.City) : "",
-                    District = information != null ? await _locationService.GetDistrictNameById(information.City, information.District) : "",
-                    Ward = information != null ? await _locationService.GetWardNameById(information.District, information.Ward) : ""
+                    City = information != null ? await _locationService.GetCityNameById(information.City!) : "",
+                    District = information != null ? await _locationService.GetDistrictNameById(information.City!, information.District!) : "",
+                    Ward = information != null ? await _locationService.GetWardNameById(information.District!, information.Ward!) : ""
                 }
             };
 
@@ -127,71 +81,84 @@ namespace NguyenManhDuc.WebApp.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Add(int Id)
+        public async Task<IActionResult> Add(int id)
         {
-            var product = await _dataContext.Products.FindAsync(Id);
+            var userId = _userManager.GetUserId(User);
+            var userName = _userManager.GetUserName(User);
+            var product = await _dataContext.Products.FindAsync(id);
             if (product == null) return NotFound();
 
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(c => c.ProductId == Id);
+            var existingItem = await _dataContext.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == id);
 
-            if (item == null)
-                cart.Add(new CartModel(product));
+            if (existingItem != null)
+            {
+                existingItem.Quantity++;
+            }
             else
-                item.Quantity++;
+            {
+                var cartItem = new CartModel(product, userId!, userName!);
+                _dataContext.Carts.Add(cartItem);
+            }
 
-            SaveCart(cart);
+            await _dataContext.SaveChangesAsync();
+
             TempData["success"] = "Thêm Vào Giỏ Hàng Thành Công.";
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-        public IActionResult Increase(int Id)
+        public async Task<IActionResult> Increase(int id)
         {
-            var product = _dataContext.Products.FirstOrDefault(p => p.Id == Id);
+            var userId = _userManager.GetUserId(User);
+            var product = await _dataContext.Products.FindAsync(id);
             if (product == null) return NotFound();
 
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(c => c.ProductId == Id);
+            var item = await _dataContext.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == id);
 
             if (item != null)
             {
                 if (item.Quantity < product.Quantity)
                     item.Quantity++;
                 else
-                    TempData["error"] = "Đã Đạt Số Lượng Sản Phẩm Tối Đa.";
+                    TempData["error"] = "Đã Đạt Số Lượng Tối Đa.";
             }
 
-            SaveCart(cart);
-            RecalculateDiscount();
-
+            await _dataContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        public IActionResult Decrease(int Id)
+        public async Task<IActionResult> Decrease(int id)
         {
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(c => c.ProductId == Id);
+            var userId = _userManager.GetUserId(User);
 
-            if (item == null) return RedirectToAction("Index");
+            var item = await _dataContext.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == id);
 
-            if (item.Quantity > 1)
-                item.Quantity--;
-            else
-                cart.Remove(item);
+            if (item != null)
+            {
+                if (item.Quantity > 1)
+                    item.Quantity--;
+                else
+                    _dataContext.Carts.Remove(item);
+            }
 
-            SaveCart(cart);
-            RecalculateDiscount();
-
+            await _dataContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var cart = GetCart();
-            cart.RemoveAll(c => c.ProductId == Id);
+            var userId = _userManager.GetUserId(User);
 
-            SaveCart(cart);
-            RecalculateDiscount();
+            var item = await _dataContext.Carts
+                .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == id);
+
+            if (item != null)
+            {
+                _dataContext.Carts.Remove(item);
+                await _dataContext.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index");
         }
@@ -201,7 +168,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(CouponCode))
             {
-                TempData["error"] = "Vui Lòng Nhập Mã Giảm Giá!!!";
+                TempData["error"] = "Vui lòng nhập mã giảm giá.";
                 return RedirectToAction("Index");
             }
 
@@ -214,11 +181,15 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (coupon == null)
             {
-                TempData["error"] = "Mã Giảm Giá Không Hợp Lệ Hoặc Đã Hết Hạn!!!";
+                TempData["error"] = "Mã giảm giá không hợp lệ hoặc đã hết hạn.";
                 return RedirectToAction("Index");
             }
 
-            var cart = GetCart();
+            var userId = _userManager.GetUserId(User);
+            var cart = await _dataContext.Carts
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
+
             var total = cart.Sum(x => x.Quantity * x.Price);
             var discount = coupon.DiscountType == DiscountType.Percent
                 ? (total * coupon.DiscountValue) / 100
@@ -227,7 +198,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             HttpContext.Session.SetString("AppliedCoupon", CouponCode);
             HttpContext.Session.SetString("DiscountAmount", discount.ToString());
 
-            TempData["success"] = "Áp Dụng Mã Giảm Giá Thành Công!";
+            TempData["success"] = "Áp dụng mã giảm giá thành công.";
             return RedirectToAction("Index");
         }
     }

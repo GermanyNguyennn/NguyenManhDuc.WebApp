@@ -26,13 +26,6 @@ namespace NguyenManhDuc.WebApp.Repository
                 .WithOne(d => d.Product)
                 .HasForeignKey<ProductDetailPhoneModel>(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Cấu hình quan hệ 1-n giữa Product và ProductQuantity
-            modelBuilder.Entity<ProductModel>()
-                .HasMany(p => p.ProductQuantities)
-                .WithOne(q => q.Product)
-                .HasForeignKey(q => q.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
        
             // Quan hệ 1-n giữa Product và OrderDetail
             modelBuilder.Entity<ProductModel>()
@@ -78,6 +71,31 @@ namespace NguyenManhDuc.WebApp.Repository
                 .WithOne(v => v.Product)
                 .HasForeignKey(v => v.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ColorModel>()
+                .HasMany(c => c.ProductColor)
+                .WithOne(pc => pc.Color)
+                .HasForeignKey(pc => pc.ColorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CapacityModel>()
+                .HasMany(c => c.ProductCapacity)
+                .WithOne(pc => pc.Capacity)
+                .HasForeignKey(pc => pc.CapacityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductVariantModel>()
+                .HasOne(v => v.Color)
+                .WithMany()
+                .HasForeignKey(v => v.ColorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductVariantModel>()
+                .HasOne(v => v.Capacity)
+                .WithMany()
+                .HasForeignKey(v => v.CapacityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         public DbSet<BrandModel> Brands { get; set; }
@@ -88,7 +106,6 @@ namespace NguyenManhDuc.WebApp.Repository
         public DbSet<OrderDetailModel> OrderDetails { get; set; }
         public DbSet<SliderModel> Sliders { get; set; }
         public DbSet<ContactModel> Contacts { get; set; }
-        public DbSet<ProductQuantityModel> ProductQuantities { get; set; }
         public DbSet<InformationModel> Information { get; set; }
         public DbSet<CouponModel> Coupons { get; set; }
         public DbSet<MoMoModel> MoMos { get; set; }
@@ -100,6 +117,6 @@ namespace NguyenManhDuc.WebApp.Repository
         public DbSet<ProductVariantModel> ProductVariants { get; set; }
         public DbSet<ColorModel> Colors { get; set; }
         public DbSet<CapacityModel> Capacities { get; set; }
-
+        public DbSet<CartModel> Carts { get; set; }
     }
 }

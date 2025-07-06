@@ -30,9 +30,9 @@ namespace NguyenManhDuc.WebApp.Services.MoMo
                 $"&requestId={requestId}" +
                 $"&requestType={_options.Value.RequestType}";
 
-            var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
+            var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey!);
 
-            var client = new RestClient(_options.Value.MoMoApiUrl);
+            var client = new RestClient(_options.Value.MoMoApiUrl!);
             var request = new RestRequest() { Method = RestSharp.Method.Post };
             request.AddHeader("Content-Type", "application/json; charset=UTF-8");
 
@@ -55,14 +55,14 @@ namespace NguyenManhDuc.WebApp.Services.MoMo
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
 
             var response = await client.ExecuteAsync(request);
-            var momoResponse = JsonConvert.DeserializeObject<MoMoResponseModel>(response.Content);
-            return momoResponse;
+            var momoResponse = JsonConvert.DeserializeObject<MoMoResponseModel>(response.Content!);
+            return momoResponse!;
 
         }
 
         public MoMoInformationModel PaymentExecuteAsync(IQueryCollection collection)
         {
-            double amount = double.Parse(collection.First(s => s.Key == "amount").Value);
+            double amount = double.Parse(collection.First(s => s.Key == "amount").Value!);
             var orderInfo = collection.First(s => s.Key == "orderInfo").Value;
             var orderId = collection.First(s => s.Key == "orderId").Value;
 

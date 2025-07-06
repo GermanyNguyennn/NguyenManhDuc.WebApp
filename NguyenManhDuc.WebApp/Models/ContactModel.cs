@@ -15,6 +15,7 @@ namespace NguyenManhDuc.WebApp.Models
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? Address { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         [NotMapped]
         [FileExtension]
         public IFormFile? ImageUpload { get; set; }

@@ -55,7 +55,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             }
 
             bool isExist = await _dataContext.Coupons
-                .AnyAsync(c => c.CouponCode.ToLower() == model.CouponCode.ToLower());
+                .AnyAsync(c => c.CouponCode!.ToLower() == model.CouponCode!.ToLower());
 
             if (isExist)
             {
@@ -107,7 +107,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             }
 
             bool isExist = await _dataContext.Coupons
-                .AnyAsync(c => c.Id != model.Id && c.CouponCode.ToLower() == model.CouponCode.ToLower());
+                .AnyAsync(c => c.Id != model.Id && c.CouponCode!.ToLower() == model.CouponCode!.ToLower());
 
             if (isExist)
             {

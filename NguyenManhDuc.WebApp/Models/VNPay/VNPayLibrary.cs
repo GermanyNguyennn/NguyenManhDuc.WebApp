@@ -20,7 +20,7 @@ namespace NguyenManhDuc.WebApp.Models.VNPay
             {
                 if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
                 {
-                    vnPay.AddResponseData(key, value);
+                    vnPay.AddResponseData(key, value!);
                 }
             }
 
@@ -39,7 +39,7 @@ namespace NguyenManhDuc.WebApp.Models.VNPay
             var vnPayAmount = vnPayAmountRaw / 100;
             var vnPayResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnPaySecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value;
-            var checkSignature = vnPay.ValidateSignature(vnPaySecureHash, hashSecret);
+            var checkSignature = vnPay.ValidateSignature(vnPaySecureHash!, hashSecret);
 
             if (!checkSignature)
             {
@@ -184,7 +184,7 @@ namespace NguyenManhDuc.WebApp.Models.VNPay
 
     public class VnPayCompare : IComparer<string>
     {
-        public int Compare(string x, string y)
+        public int Compare(string? x, string? y)
         {
             if (x == y) return 0;
             if (x == null) return -1;

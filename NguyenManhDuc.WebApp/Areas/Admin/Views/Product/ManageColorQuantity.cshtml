@@ -10,17 +10,28 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Tên màu</th>
-            <th>Số lượng</th>
+            <th>Màu Sắc</th>
+            <th>Số Lượng</th>
+            <th>Trạng Thái</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Color.Color</td>
+                <td>@item.Color!.Color</td>
                 <td>@item.Quantity</td>
-                <td class="text-center">
+                <td>
+                    @if (item.Status == 1)
+                    {
+                        <span class="text text-success">Hiển Thị</span>
+                    }
+                    else
+                    {
+                        <span class="text text-danger">Ẩn</span>
+                    }
+                </td>
+                <td>
                     <a asp-action="EditColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
                     <a asp-action="DeleteColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
                        onclick="return confirm('Bạn có chắc muốn xoá màu này?');">Xoá</a>

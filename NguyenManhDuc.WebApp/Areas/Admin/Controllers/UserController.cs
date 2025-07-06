@@ -43,7 +43,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var pager = new Paginate(count, page, pageSize);
 
             var usersWithRoles = await usersWithRolesQuery
-                .OrderByDescending(x => x.User.Id)
+                .OrderByDescending(x => x.User!.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -72,7 +72,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var createResult = await _userManager.CreateAsync(model, model.PasswordHash);
+            var createResult = await _userManager.CreateAsync(model, model.PasswordHash!);
             if (!createResult.Succeeded)
             {
                 foreach (var error in createResult.Errors)
@@ -83,7 +83,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var role = await _roleManager.FindByIdAsync(selectedRoleId);
             if (role != null)
             {
-                var roleResult = await _userManager.AddToRoleAsync(model, role.Name);
+                var roleResult = await _userManager.AddToRoleAsync(model, role.Name!);
                 if (!roleResult.Succeeded)
                 {
                     foreach (var error in roleResult.Errors)
@@ -132,7 +132,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             var role = await _roleManager.FindByIdAsync(selectedRoleId);
             if (role != null)
-                await _userManager.AddToRoleAsync(user, role.Name);
+                await _userManager.AddToRoleAsync(user, role.Name!);
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)

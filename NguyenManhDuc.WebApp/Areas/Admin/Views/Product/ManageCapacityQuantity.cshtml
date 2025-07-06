@@ -10,17 +10,28 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Dung lượng</th>
+            <th>Dung Lượng</th>
             <th>Số lượng</th>
+            <th>Trạng Thái</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Capacity.Capacity</td>
+                <td>@item.Capacity!.Capacity</td>
                 <td>@item.Quantity</td>
-                <td class="text-center">
+                <td>
+                    @if (item.Status == 1)
+                    {
+                        <span class="text text-success">Hiển Thị</span>
+                    }
+                    else
+                    {
+                        <span class="text text-danger">Ẩn</span>
+                    }
+                </td>
+                <td>
                     <a asp-action="EditCapacityQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
                     <a asp-action="DeleteCapacityQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
                        onclick="return confirm('Bạn có chắc muốn xoá dung lượng này?');">Xoá</a>

@@ -13,6 +13,8 @@ namespace NguyenManhDuc.WebApp.Models
         public string? Image { get; set; }
         public string? Description { get; set; }
         public int Status { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
         [NotMapped]
         [FileExtension]
         public IFormFile? ImageUpload { get; set; }

@@ -35,12 +35,12 @@ namespace NguyenManhDuc.WebApp.Services.Location
         private class LocationApiResponse
         {
             public int error { get; set; }
-            public List<LocationItem> data { get; set; }
+            public List<LocationItem>? data { get; set; }
         }
         private class LocationItem
         {
-            public string id { get; set; }
-            public string full_name { get; set; }
+            public string? id { get; set; }
+            public string? full_name { get; set; }
         }
     }
 }

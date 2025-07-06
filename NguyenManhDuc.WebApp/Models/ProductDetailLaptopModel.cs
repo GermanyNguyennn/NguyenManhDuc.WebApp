@@ -29,5 +29,6 @@ namespace NguyenManhDuc.WebApp.Models
         public string? ScreenResolution { get; set; } // Độ phân giải màn hình
         public string? CPUType { get; set; } // Loại CPU
         public string? Interface {  get; set; } // Cổng giao tiếp
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

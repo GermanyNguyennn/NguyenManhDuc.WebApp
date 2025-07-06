@@ -1,19 +1,19 @@
 ﻿
-<style>
-	.table.table-bordered,
-	.table.table-bordered th,
-	.table.table-bordered td {
-		border: none !important;
-	}
-</style>
+@* <style> *@
+@* 	.table.table-bordered, *@
+@* 	.table.table-bordered th, *@
+@* 	.table.table-bordered td { *@
+@* 		border: none !important; *@
+@* 	} *@
+@* </style> *@
 
-<div class="col-sm-3">
-	<partial name="_SidebarPartial" />
-</div>
+@* <div class="col-sm-3"> *@
+@* 	<partial name="_SidebarPartial" /> *@
+@* </div> *@
 
-<div class="col-sm-9 padding-right">
+<div class="col-sm-12 padding-right">
 	<div class="product-details">
-		<div class="col-sm-5">
+		<div class="col-sm-4">
 			<div class="view-product">
 				<img src="@Url.Content($"~/media/products/{Model.Product.Image}")" alt="@Model.Product.Name" />
 			</div>
@@ -33,9 +33,13 @@
 				</a>
 			</div>
 		</div>
-		<div class="col-sm-7">
-			<div class="product-information">
-				<h2>@Model.Product.Name</h2>					
+		<div class="col-sm-8">
+			<div class="product-information">	
+				<span>
+					<span>
+						@Model.Product.Name
+					</span>
+				</span>
 				<table class="table table-bordered">
 					<tr>
 						<th style="vertical-align: middle;">Giá:</th>
@@ -109,7 +113,7 @@
 						<tr><th>SIM</th><td>@Model.PhoneDetail.SimCard</td></tr>
 						<tr><th>Hệ điều hành</th><td>@Model.PhoneDetail.OperatingSystem</td></tr>
 						<tr><th>Độ phân giải</th><td>@Model.PhoneDetail.DisplayResolution</td></tr>
-						<tr><th>Tính năng hiển thị</th><td>@Model.PhoneDetail.DisplayFeatures</td></tr>
+						<tr><th>Tính năng màn hình</th><td>@Model.PhoneDetail.DisplayFeatures</td></tr>
 						<tr><th>CPU</th><td>@Model.PhoneDetail.CPUType</td></tr>
 					}
 					else if (Model.Product.CategoryId == 2 && Model.LaptopDetail != null)

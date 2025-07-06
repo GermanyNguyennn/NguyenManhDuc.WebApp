@@ -73,7 +73,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             }
 
             var products = await _dataContext.Products
-                .Where(p => p.Name.Contains(searchTerm))
+                .Where(p => p.Name!.Contains(searchTerm))
                 .ToListAsync();
 
             ViewBag.Sliders = await _dataContext.Sliders

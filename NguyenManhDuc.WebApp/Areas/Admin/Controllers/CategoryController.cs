@@ -51,7 +51,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(categoryModel);
             }
 
-            categoryModel.Slug = GenerateSlug(categoryModel.Name);
+            categoryModel.Slug = GenerateSlug(categoryModel.Name!);
 
             bool slugExists = await _dataContext.Categories
                 .AnyAsync(c => c.Slug == categoryModel.Slug);
@@ -92,7 +92,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(categoryModel);
             }
 
-            categoryModel.Slug = GenerateSlug(categoryModel.Name);
+            categoryModel.Slug = GenerateSlug(categoryModel.Name!);
 
             bool slugExists = await _dataContext.Categories
                 .AnyAsync(c => c.Id != categoryModel.Id && c.Slug == categoryModel.Slug);

@@ -50,7 +50,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(capacityModel);
             }
 
-            capacityModel.Slug = GenerateSlug(capacityModel.Capacity);
+            capacityModel.Slug = GenerateSlug(capacityModel.Capacity!);
 
             bool slugExists = await _dataContext.Capacities
                 .AnyAsync(c => c.Slug == capacityModel.Slug);
@@ -91,7 +91,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(capacityModel);
             }
 
-            capacityModel.Slug = GenerateSlug(capacityModel.Capacity);
+            capacityModel.Slug = GenerateSlug(capacityModel.Capacity!);
 
             bool slugExists = await _dataContext.Capacities
                 .AnyAsync(c => c.Id != capacityModel.Id && c.Slug == capacityModel.Slug);

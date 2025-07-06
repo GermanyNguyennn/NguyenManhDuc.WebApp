@@ -29,12 +29,8 @@
                 <th scope="col">Thông Số Kỹ Thuật</th>
                 <th scope="col">Giá Bán</th>
                 <th scope="col">Giá Nhập</th>
-                <th scope="col">Số Lượng</th>
                 <th scope="col">Số Lượng Tồn Kho</th>
                 <th scope="col">Đã Bán</th>
-                @* <th scope="col">Danh Mục</th> *@
-                @* <th scope="col">Thương Hiệu</th> *@
-                @* <th scope="col">Công Ty</th> *@
                 <th scope="col">Màu Sắc</th>
                 <th scope="col">Dung Lượng</th>
                 <th scope="col">Tồn Kho Chi Tiết</th>
@@ -52,12 +48,8 @@
                     </td>
                     <td>@item.Price.ToString("#,##0 VNĐ")</td>
                     <td>@item.ImportPrice.ToString("#,##0 VNĐ")</td>
-                    <td><a asp-controller="Product" asp-action="IndexQuantity" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Thêm</a></td>
                     <td>@item.Quantity</td>
                     <td>@item.Sold</td>
-                    @* <td>@item.Category?.Name</td> *@
-                    @* <td>@item.Brand?.Name</td> *@
-                    @* <td>@item.Company?.Name</td> *@
                     <td>
                         <a asp-controller="Product" asp-action="ManageColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Màu sắc</a>
                     </td>

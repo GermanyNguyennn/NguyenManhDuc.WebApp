@@ -49,7 +49,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(CompanyModel);
             }
 
-            CompanyModel.Slug = GenerateSlug(CompanyModel.Name);
+            CompanyModel.Slug = GenerateSlug(CompanyModel.Name!);
 
             bool slugExists = await _dataContext.Companies
                 .AnyAsync(b => b.Slug == CompanyModel.Slug);
@@ -90,7 +90,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(CompanyModel);
             }
 
-            CompanyModel.Slug = GenerateSlug(CompanyModel.Name);
+            CompanyModel.Slug = GenerateSlug(CompanyModel.Name!);
 
             bool slugExists = await _dataContext.Companies
                 .AnyAsync(b => b.Id != CompanyModel.Id && b.Slug == CompanyModel.Slug);

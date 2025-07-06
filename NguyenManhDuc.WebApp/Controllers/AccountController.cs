@@ -32,9 +32,9 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (TempData["UserId"] != null)
             {
-                var userId = TempData["UserId"].ToString();
+                var userId = TempData["UserId"]!.ToString();
                 TempData.Keep("UserId");
-                return await _userManager.FindByIdAsync(userId);
+                return await _userManager.FindByIdAsync(userId!);
             }
 
             return null;
@@ -48,7 +48,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 await _userManager.ResetAuthenticatorKeyAsync(user);
                 key = await _userManager.GetAuthenticatorKeyAsync(user);
             }
-            return key;
+            return key!;
         }
 
         private string GenerateQrCodeUrl(string email, string key, string userName)
@@ -70,7 +70,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 return RedirectToAction("Index", "Home");
 
             var key = await EnsureAuthenticatorKeyAsync(user);
-            ViewBag.QrCodeUrl = GenerateQrCodeUrl(user.Email, key, user.UserName);
+            ViewBag.QrCodeUrl = GenerateQrCodeUrl(user.Email!, key, user.UserName!);
             ViewBag.Key = key;
             return View();
         }
@@ -87,7 +87,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             if (!isValid)
             {
                 var key = await EnsureAuthenticatorKeyAsync(user);
-                ViewBag.QrCodeUrl = GenerateQrCodeUrl(user.Email, key, user.UserName);
+                ViewBag.QrCodeUrl = GenerateQrCodeUrl(user.Email!, key, user.UserName!);
                 ViewBag.Key = key;
                 TempData["error"] = "Mã Xác Thực Không Hợp Lệ.";
                 return View();
@@ -119,14 +119,14 @@ namespace NguyenManhDuc.WebApp.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            var user = await _userManager.FindByNameAsync(model.UserName!);
             if (user == null)
             {
                 TempData["error"] = "Tài khoản không tồn tại.";
                 return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password!, isPersistent: false, lockoutOnFailure: false);
 
             if (result.RequiresTwoFactor)
             {
@@ -210,7 +210,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email!);
             if (user == null || !await _userManager.IsInRoleAsync(user, "Admin"))
             {
                 TempData["error"] = "Email Không Tồn Tại.";
@@ -220,7 +220,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var token = await _userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "Reset2FA");
             var resetLink = Url.Action("ConfirmReset2FA", "Account", new { userId = user.Id, token }, Request.Scheme);
 
-            await _emailSender.SendEmailAsync(model.Email, "Reset 2FA", $"Ấn Vào <a href='{resetLink}'>Đây</a> Để Đặt Lại Xác Thực 2 Bước.");
+            await _emailSender.SendEmailAsync(model.Email!, "Reset 2FA", $"Ấn Vào <a href='{resetLink}'>Đây</a> Để Đặt Lại Xác Thực 2 Bước.");
             TempData["success"] = "Đã Gửi Link Reset 2FA Đến Email Của Bạn.";
             return RedirectToAction("Login", "Account");
         }
@@ -280,7 +280,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 PhoneNumber = registerViewModel.PhoneNumber
             };
 
-            var result = await _userManager.CreateAsync(newUser, registerViewModel.Password);
+            var result = await _userManager.CreateAsync(newUser, registerViewModel.Password!);
             if (result.Succeeded)
             {
                 var roleResult = await _userManager.AddToRoleAsync(newUser, "Customer");
@@ -341,7 +341,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> View(string orderCode)
+        public async Task<IActionResult> ViewOrder(string orderCode)
         {
             if (string.IsNullOrWhiteSpace(orderCode))
                 return NotFound();
@@ -371,9 +371,9 @@ namespace NguyenManhDuc.WebApp.Controllers
         public async Task<IActionResult> SendMailForgotPassword(AppUserModel appUserModel)
         {
             if (!ModelState.IsValid)
-                return await View("ForgotPassword");
+                return View("ForgotPassword");
 
-            var user = await _userManager.FindByEmailAsync(appUserModel.Email);
+            var user = await _userManager.FindByEmailAsync(appUserModel.Email!);
             if (user == null)
             {
                 TempData["error"] = "Email Không Hợp Lệ.";
@@ -389,7 +389,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             var body = $"Ấn Vào <a href='{callbackUrl}'>Đây</a> Để Đặt Lại Mật Khẩu.";
 
-            await _emailSender.SendEmailAsync(user.Email, "Đặt Lại Mật Khẩu", body);
+            await _emailSender.SendEmailAsync(user.Email!, "Đặt Lại Mật Khẩu", body);
 
             TempData["success"] = "Email Đặt Lại Mật Khẩu Đã Được Gửi.";
             return RedirectToAction("ForgotPassword");
@@ -418,14 +418,14 @@ namespace NguyenManhDuc.WebApp.Controllers
             if (!ModelState.IsValid)
                 return View("NewPassword", model);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email!);
             if (user == null)
             {
                 TempData["error"] = "Email Không Hợp Lệ.";
                 return RedirectToAction("ForgotPassword");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(model.Token), model.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, HttpUtility.UrlDecode(model.Token!), model.NewPassword!);
 
             if (result.Succeeded)
             {
@@ -494,21 +494,21 @@ namespace NguyenManhDuc.WebApp.Controllers
                 information = new InformationModel
                 {
                     UserId = userId,
-                    FullName = model.FullName,
-                    Address = model.Address,
-                    Ward = model.Ward,
-                    District = model.District,
-                    City = model.City
+                    FullName = model.FullName!,
+                    Address = model.Address!,
+                    Ward = model.Ward!,
+                    District = model.District!,
+                    City = model.City!
                 };
                 _dataContext.Information.Add(information);
             }
             else
             {
-                information.FullName = model.FullName;
-                information.Address = model.Address;
-                information.Ward = model.Ward;
-                information.District = model.District;
-                information.City = model.City;
+                information.FullName = model.FullName!;
+                information.Address = model.Address!;
+                information.Ward = model.Ward!;
+                information.District = model.District!;
+                information.City = model.City!;
                 _dataContext.Information.Update(information);
             }
 

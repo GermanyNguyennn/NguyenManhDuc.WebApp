@@ -26,7 +26,7 @@
                 <th scope="col">Id</th>
                 <th scope="col">Tên Công Ty</th>
                 <th scope="col">Mô Tả</th>
-                @* <th scope="col">Slug</th> *@
+                <th scope="col">Slug</th>
                 <th scope="col">Trạng Thái</th>
             </tr>
         </thead>
@@ -34,10 +34,10 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <th>@item.Id</th>
+                    <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>@Html.Raw(@item.Description)</td>
-                    @* <td>@item.Slug</td> *@
+                    <td>@item.Slug</td>
                     <td>
                         @if (item.Status == 1)
                         {

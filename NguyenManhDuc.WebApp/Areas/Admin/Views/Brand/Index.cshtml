@@ -1,6 +1,7 @@
 ﻿@using NguyenManhDuc.WebApp.Models
 @using NguyenManhDuc.WebApp.Repository
 @using NguyenManhDuc.WebApp.Repository.Validation
+
 @model IEnumerable<BrandModel>
 @{
     ViewData["Title"] = "Danh Sách Thương Hiệu";
@@ -16,43 +17,44 @@
         pageNo = pager.CurrentPage;
     }
 }
+
 <div class="">
-<p><a asp-controller="Brand" asp-action="Add" class="btn btn-warning btn-sm">Thêm Thương Hiệu</a></p>
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Tên Thương Hiệu</th>
-            <th scope="col">Mô Tả</th>
-                @* <th scope="col">Slug</th> *@
-            <th scope="col">Trạng Thái</th>
-        </tr>
-    </thead>
-    <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@Html.Raw(@item.Description)</td>
-                    @* <td>@item.Slug</td> *@
-                    <td>
-                        @if (item.Status == 1)
-                        {
-                                <span class="text text-success">Hiển Thị</span>
-                        }
-                        else
-                        {
-                                <span class="text text-danger">Ẩn</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-controller="Brand" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                        <a asp-controller="Brand" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
-                    </td>
-                </tr>
-            }
-    </tbody>
-</table>
-<partial name="_Paging" model="@pager" />
+    <p><a asp-controller="Brand" asp-action="Add" class="btn btn-warning btn-sm">Thêm Thương Hiệu</a></p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Tên Thương Hiệu</th>
+                <th scope="col">Mô Tả</th>
+                <th scope="col">Slug</th>
+                <th scope="col">Trạng Thái</th>
+            </tr>
+        </thead>
+        <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@Html.Raw(@item.Description)</td>
+                        <td>@item.Slug</td>
+                        <td>
+                            @if (item.Status == 1)
+                            {
+                                    <span class="text text-success">Hiển Thị</span>
+                            }
+                            else
+                            {
+                                    <span class="text text-danger">Ẩn</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Brand" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-controller="Brand" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
+                        </td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+    <partial name="_Paging" model="@pager" />
 </div>

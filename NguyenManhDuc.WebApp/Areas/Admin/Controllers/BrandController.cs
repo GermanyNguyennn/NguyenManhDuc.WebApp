@@ -50,7 +50,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(brandModel);
             }
 
-            brandModel.Slug = GenerateSlug(brandModel.Name);
+            brandModel.Slug = GenerateSlug(brandModel.Name!);
 
             bool slugExists = await _dataContext.Brands
                 .AnyAsync(b => b.Slug == brandModel.Slug);
@@ -91,7 +91,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(brandModel);
             }
 
-            brandModel.Slug = GenerateSlug(brandModel.Name);
+            brandModel.Slug = GenerateSlug(brandModel.Name!);
 
             bool slugExists = await _dataContext.Brands
                 .AnyAsync(b => b.Id != brandModel.Id && b.Slug == brandModel.Slug);

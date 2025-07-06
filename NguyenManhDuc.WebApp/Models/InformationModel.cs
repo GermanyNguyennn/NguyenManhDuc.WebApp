@@ -17,5 +17,6 @@ namespace NguyenManhDuc.WebApp.Models
         public string? City { get; set; }
         public string? District { get; set; }
         public string? Ward { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

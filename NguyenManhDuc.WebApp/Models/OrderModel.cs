@@ -11,7 +11,7 @@ namespace NguyenManhDuc.WebApp.Models
         public string? UserName { get; set; }
         public int? CouponId { get; set; }
         public string? CouponCode { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int Status { get; set; }
         public string? PaymentMethod { get; set; }
         [ForeignKey("CouponId")]

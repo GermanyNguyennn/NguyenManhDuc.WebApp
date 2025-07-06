@@ -20,5 +20,6 @@ namespace NguyenManhDuc.WebApp.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int Status { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

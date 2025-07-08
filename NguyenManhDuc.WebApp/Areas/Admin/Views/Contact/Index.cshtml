@@ -23,24 +23,22 @@
 <table class="table table-bordered table-hover" id="myTable">
     <thead>
         <tr>
-            <th scope ="col">Id</th>
-            <th scope="col">Tên Liên Hệ</th>
-            <th scope="col">Ảnh</th>
-                @* <th scope="col">Mô Tả</th> *@
-            <th scope="col">Địa Chỉ</th>
-            <th scope="col">Email</th>
-            <th scope="col">Số Điện Thoại</th>
-            <th scope="col">Địa Chỉ</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Tên Liên Hệ</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Ảnh</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Địa Chỉ</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Email</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Số Điện Thoại</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Địa Chỉ</th>
         </tr>
     </thead>
     <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Id</td>
+                    <td scope="col" class="text-center" style="vertical-align: middle;">@item.Id</td>
                     <td>@item.Name</td>
                     <td><img src="@Url.Content($"~/media/logo/{item.LogoImage}")" style="max-width: 100px; max-height: 100px;" /></td>
-                    @* <td>@Html.Raw(@item.Description)</td> *@
                     <td>
                         <div id="map">
                             <iframe src="@item.Map"

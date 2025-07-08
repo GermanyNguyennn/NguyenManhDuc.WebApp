@@ -53,7 +53,6 @@ namespace NguyenManhDuc.WebApp.Repository
                 .HasForeignKey(p => p.CompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Quan hệ 1-n giữa Product và ProductColor
             modelBuilder.Entity<ProductModel>()
                 .HasMany(p => p.ProductColors)
                 .WithOne(c => c.Product)
@@ -78,10 +77,10 @@ namespace NguyenManhDuc.WebApp.Repository
                 .HasForeignKey(pc => pc.ColorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<CapacityModel>()
+            modelBuilder.Entity<VersionModel>()
                 .HasMany(c => c.ProductCapacity)
-                .WithOne(pc => pc.Capacity)
-                .HasForeignKey(pc => pc.CapacityId)
+                .WithOne(pc => pc.Version)
+                .HasForeignKey(pc => pc.VersionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductVariantModel>()
@@ -91,9 +90,9 @@ namespace NguyenManhDuc.WebApp.Repository
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductVariantModel>()
-                .HasOne(v => v.Capacity)
+                .HasOne(v => v.Version)
                 .WithMany()
-                .HasForeignKey(v => v.CapacityId)
+                .HasForeignKey(v => v.VersionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
         }
@@ -113,10 +112,10 @@ namespace NguyenManhDuc.WebApp.Repository
         public DbSet<ProductDetailPhoneModel> ProductDetailPhones { get; set; }
         public DbSet<ProductDetailLaptopModel> ProductDetailLaptops { get; set; }
         public DbSet<ProductColorModel> ProductColors { get; set; }
-        public DbSet<ProductCapacityModel> ProductCapacities { get; set; }
+        public DbSet<ProductVersionModel> ProductVersions { get; set; }
         public DbSet<ProductVariantModel> ProductVariants { get; set; }
         public DbSet<ColorModel> Colors { get; set; }
-        public DbSet<CapacityModel> Capacities { get; set; }
+        public DbSet<VersionModel> Versions { get; set; }
         public DbSet<CartModel> Carts { get; set; }
     }
 }

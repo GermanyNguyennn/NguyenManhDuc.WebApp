@@ -11,6 +11,6 @@
         public CompanyModel Company => Product?.Company!;
 
         public List<ProductColorModel>? Colors { get; set; }
-        public List<ProductCapacityModel>? Capacities { get; set; }
+        public List<ProductVersionModel>? Capacities { get; set; }
     }
 }

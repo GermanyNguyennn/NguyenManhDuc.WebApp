@@ -49,20 +49,20 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(model?.Name))
             {
-                TempData["error"] = "Tên vai trò không được để trống.";
+                TempData["error"] = "Role cannot be empty.";
                 return View(model);
             }
 
             if (await _roleManager.RoleExistsAsync(model.Name))
             {
-                TempData["error"] = "Vai trò đã tồn tại.";
+                TempData["error"] = "The role already exists.";
                 return View(model);
             }
 
             var result = await _roleManager.CreateAsync(new IdentityRole(model.Name));
             if (result.Succeeded)
             {
-                TempData["success"] = "Thêm vai trò thành công.";
+                TempData["success"] = "Role added successfully!";
                 return RedirectToAction("Index");
             }
 
@@ -91,7 +91,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(model);
             }
 
@@ -103,7 +103,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var result = await _roleManager.UpdateAsync(role);
             if (result.Succeeded)
             {
-                TempData["success"] = "Cập nhật vai trò thành công.";
+                TempData["success"] = "Role updated successfully!";
                 return RedirectToAction("Index");
             }
 
@@ -126,11 +126,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var result = await _roleManager.DeleteAsync(role);
             if (result.Succeeded)
             {
-                TempData["success"] = "Xóa vai trò thành công.";
+                TempData["success"] = "Role deleted successfully!";
             }
             else
             {
-                TempData["error"] = "Không thể xóa vai trò.";
+                TempData["error"] = "Role cannot be deleted.";
             }
 
             return RedirectToAction("Index");

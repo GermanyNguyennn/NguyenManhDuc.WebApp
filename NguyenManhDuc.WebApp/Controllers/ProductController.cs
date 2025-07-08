@@ -56,7 +56,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 .Include(x => x.Color)
                 .Where(x => x.ProductId == id && x.Status == 1)
                 .ToListAsync(),
-                        Capacities = await _dataContext.ProductCapacities
+                        Capacities = await _dataContext.ProductVersions
                 .Where(x => x.ProductId == id && x.Status == 1)
                 .ToListAsync()
             };

@@ -103,7 +103,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm Vào Giỏ Hàng Thành Công.";
+            TempData["success"] = "Add to cart successfully.";
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
@@ -121,7 +121,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 if (item.Quantity < product.Quantity)
                     item.Quantity++;
                 else
-                    TempData["error"] = "Đã Đạt Số Lượng Tối Đa.";
+                    TempData["error"] = "Maximum quantity reached.";
             }
 
             await _dataContext.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(CouponCode))
             {
-                TempData["error"] = "Vui lòng nhập mã giảm giá.";
+                TempData["error"] = "Please enter coupon code.";
                 return RedirectToAction("Index");
             }
 
@@ -181,7 +181,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (coupon == null)
             {
-                TempData["error"] = "Mã giảm giá không hợp lệ hoặc đã hết hạn.";
+                TempData["error"] = "Coupon code is invalid or expired.";
                 return RedirectToAction("Index");
             }
 
@@ -198,7 +198,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             HttpContext.Session.SetString("AppliedCoupon", CouponCode);
             HttpContext.Session.SetString("DiscountAmount", discount.ToString());
 
-            TempData["success"] = "Áp dụng mã giảm giá thành công.";
+            TempData["success"] = "Coupon code has been applied successfully.";
             return RedirectToAction("Index");
         }
     }

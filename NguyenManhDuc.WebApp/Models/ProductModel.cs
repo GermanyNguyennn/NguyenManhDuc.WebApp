@@ -12,6 +12,8 @@ namespace NguyenManhDuc.WebApp.Models
         public string? Name { get; set; }
         public string? Image { get; set; }
         public string? Description { get; set; }
+        public string? Color { get; set; }
+        public string? Version { get; set; }
         public decimal Price { get; set; }
         public decimal ImportPrice { get; set; }
         public int Quantity { get; set; }
@@ -36,7 +38,7 @@ namespace NguyenManhDuc.WebApp.Models
         public ProductDetailPhoneModel? ProductDetailPhones { get; set; }
         public ProductDetailLaptopModel? ProductDetailLaptops { get; set; }
         public ICollection<ProductColorModel> ProductColors { get; set; } = new List<ProductColorModel>();
-        public ICollection<ProductCapacityModel> ProductCapacities { get; set; } = new List<ProductCapacityModel>();
+        public ICollection<ProductVersionModel> ProductCapacities { get; set; } = new List<ProductVersionModel>();
         public ICollection<ProductVariantModel> ProductVariants { get; set; } = new List<ProductVariantModel>();
         public ICollection<OrderDetailModel> OrderDetails { get; set; } = new List<OrderDetailModel>();
 

@@ -45,7 +45,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(model);
             }
 
@@ -57,7 +57,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Sliders.Add(model);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm slider thành công.";
+            TempData["success"] = "Slider added successfully.";
             return RedirectToAction("Index");
         }
 
@@ -79,7 +79,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(model);
             }
 
@@ -96,7 +96,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Update(existing);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật slider thành công.";
+            TempData["success"] = "Slider updatec successfully!";
             return RedirectToAction("Index");
         }
 
@@ -111,7 +111,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Sliders.Remove(slider);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xoá slider thành công.";
+            TempData["success"] = "Slider deleted successfully!";
             return RedirectToAction("Index");
         }
 

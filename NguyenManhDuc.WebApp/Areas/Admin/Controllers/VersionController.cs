@@ -11,11 +11,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class CapacityController : Controller
+    public class VersionController : Controller
     {
         private readonly DataContext _dataContext;
 
-        public CapacityController(DataContext context)
+        public VersionController(DataContext context)
         {
             _dataContext = context;
         }
@@ -25,10 +25,10 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             const int pageSize = 10;
             if (page < 1) page = 1;
 
-            int totalItems = await _dataContext.Capacities.CountAsync();
+            int totalItems = await _dataContext.Versions.CountAsync();
             var pager = new Paginate(totalItems, page, pageSize);
 
-            var capacities = await _dataContext.Capacities
+            var capacities = await _dataContext.Versions
                 .OrderBy(c => c.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -42,39 +42,39 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(CapacityModel capacityModel)
+        public async Task<IActionResult> Add(VersionModel capacityModel)
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(capacityModel);
             }
 
-            capacityModel.Slug = GenerateSlug(capacityModel.Capacity!);
+            capacityModel.Slug = GenerateSlug(capacityModel.Version!);
 
-            bool slugExists = await _dataContext.Capacities
+            bool slugExists = await _dataContext.Versions
                 .AnyAsync(c => c.Slug == capacityModel.Slug);
 
             if (slugExists)
             {
-                TempData["error"] = "Dung lượng đã tồn tại.";
+                TempData["error"] = "Version already exists.";
                 return View(capacityModel);
             }
 
-            _dataContext.Capacities.Add(capacityModel);
+            _dataContext.Versions.Add(capacityModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm dung lượng thành công!";
+            TempData["success"] = "Version added successfully!";
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var capacities = await _dataContext.Capacities.FindAsync(id);
+            var capacities = await _dataContext.Versions.FindAsync(id);
             if (capacities == null)
             {
-                TempData["error"] = "Không tìm thấy dung lượng.";
+                TempData["error"] = "Version not found.";
                 return RedirectToAction("Index");
             }
 
@@ -83,29 +83,29 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CapacityModel capacityModel)
+        public async Task<IActionResult> Edit(VersionModel capacityModel)
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(capacityModel);
             }
 
-            capacityModel.Slug = GenerateSlug(capacityModel.Capacity!);
+            capacityModel.Slug = GenerateSlug(capacityModel.Version!);
 
-            bool slugExists = await _dataContext.Capacities
+            bool slugExists = await _dataContext.Versions
                 .AnyAsync(c => c.Id != capacityModel.Id && c.Slug == capacityModel.Slug);
 
             if (slugExists)
             {
-                TempData["error"] = "Tên dung lượng bị trùng với dung lượng khác.";
+                TempData["error"] = "The version name is duplicated with another version.";
                 return View(capacityModel);
             }
 
-            _dataContext.Capacities.Update(capacityModel);
+            _dataContext.Versions.Update(capacityModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật màu sắc thành công!";
+            TempData["success"] = "Version updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -113,17 +113,17 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var capacities = await _dataContext.Capacities.FindAsync(id);
+            var capacities = await _dataContext.Versions.FindAsync(id);
             if (capacities == null)
             {
-                TempData["error"] = "Không tìm thấy màu sắc.";
+                TempData["error"] = "Version not found.";
                 return RedirectToAction("Index");
             }
 
-            _dataContext.Capacities.Remove(capacities);
+            _dataContext.Versions.Remove(capacities);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa dung lượng thành công!";
+            TempData["success"] = "Version deleted successfully!";
             return RedirectToAction("Index");
         }
 

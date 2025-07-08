@@ -47,7 +47,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(categoryModel);
             }
 
@@ -58,14 +58,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Danh mục đã tồn tại.";
+                TempData["error"] = "The category already exists.";
                 return View(categoryModel);
             }
 
             _dataContext.Categories.Add(categoryModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm danh mục thành công!";
+            TempData["success"] = "Category added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -75,7 +75,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var category = await _dataContext.Categories.FindAsync(id);
             if (category == null)
             {
-                TempData["error"] = "Không tìm thấy danh mục.";
+                TempData["error"] = "Category not found.";
                 return RedirectToAction("Index");
             }
 
@@ -88,7 +88,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(categoryModel);
             }
 
@@ -99,14 +99,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Tên danh mục bị trùng với danh mục khác.";
+                TempData["error"] = "Category name is duplicated with another category.";
                 return View(categoryModel);
             }
 
             _dataContext.Categories.Update(categoryModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật danh mục thành công!";
+            TempData["success"] = "Category updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -117,14 +117,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var category = await _dataContext.Categories.FindAsync(id);
             if (category == null)
             {
-                TempData["error"] = "Không tìm thấy danh mục.";
+                TempData["error"] = "Category not found.";
                 return RedirectToAction("Index");
             }
 
             _dataContext.Categories.Remove(category);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa danh mục thành công!";
+            TempData["success"] = "Category deleted successfully!";
             return RedirectToAction("Index");
         }
 

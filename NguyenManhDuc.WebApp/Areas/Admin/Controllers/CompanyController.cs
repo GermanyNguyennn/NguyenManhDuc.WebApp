@@ -45,7 +45,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(CompanyModel);
             }
 
@@ -56,14 +56,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Công ty đã tồn tại.";
+                TempData["error"] = "The company already exists.";
                 return View(CompanyModel);
             }
 
             _dataContext.Companies.Add(CompanyModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm công ty thành công!";
+            TempData["success"] = "Company added successfully";
             return RedirectToAction("Index");
         }
 
@@ -73,7 +73,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var Company = await _dataContext.Companies.FindAsync(id);
             if (Company == null)
             {
-                TempData["error"] = "Không tìm thấy công ty.";
+                TempData["error"] = "Comany not found.";
                 return RedirectToAction("Index");
             }
 
@@ -86,7 +86,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(CompanyModel);
             }
 
@@ -97,14 +97,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Tên công ty bị trùng với công ty khác.";
+                TempData["error"] = "Company name is duplicated with another company.";
                 return View(CompanyModel);
             }
 
             _dataContext.Update(CompanyModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật công ty thành công!";
+            TempData["success"] = "Company updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -115,14 +115,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var Company = await _dataContext.Companies.FindAsync(id);
             if (Company == null)
             {
-                TempData["error"] = "Không tìm thấy công ty.";
+                TempData["error"] = "Company not found.";
                 return RedirectToAction("Index");
             }
 
             _dataContext.Companies.Remove(Company);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa công ty thành công!";
+            TempData["success"] = "Company deleted successfully!";
             return RedirectToAction("Index");
         }
 

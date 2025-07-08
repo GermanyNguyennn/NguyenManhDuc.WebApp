@@ -25,7 +25,7 @@ namespace NguyenManhDuc.WebApp.Models
         public string? FrontCamera { get; set; } // Camera sau
         public string? ChipSet { get; set; } // Chipset
         public bool NFC { get; set; } // NFC
-        public string? RAMCapacity { get; set; } // Dung lượng RAM
+        public string? RAMCapacity { get; set; } // Phiên Bản RAM
         public string? InternalStorage { get; set; } // Bộ nhớ trong
         public string? SimCard { get; set; } // Thẻ sim
         public string? OperatingSystem { get; set; } // Hệ điều hành

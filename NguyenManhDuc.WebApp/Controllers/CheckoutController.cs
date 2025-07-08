@@ -108,7 +108,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 var product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
                 if (product == null || product.Quantity < item.Quantity)
                 {
-                    TempData["error"] = $"Sản phẩm '{item.ProductName}' không đủ số lượng.";
+                    TempData["error"] = $"Product '{item.ProductName}' does not have sufficient quantity.";
                     return RedirectToAction("Index", "Cart");
                 }
 
@@ -149,7 +149,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             // Gửi email xác nhận
             await SendOrderEmails(userEmail, userName!, orderCode, emailItems, totalAmount, couponCode, discountAmount);
 
-            TempData["success"] = "Thanh toán thành công!";
+            TempData["success"] = "Order successful!";
             return RedirectToAction("Index", "Home");
         }
 
@@ -212,7 +212,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 });
             }
 
-            TempData["error"] = "Thanh Toán Bằng MoMo Không Thành Công.";
+            TempData["error"] = "Payment by MoMo failed.";
             return RedirectToAction("Index", "Home");
         }
 
@@ -245,7 +245,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 });
             }
 
-            TempData["error"] = "Thanh Toán Bằng VNPay Không Thành Công.";
+            TempData["error"] = "Payment by VNPay failed.";
             return RedirectToAction("Index", "Home");
         }
     }

@@ -89,14 +89,14 @@ namespace NguyenManhDuc.WebApp.Controllers
                 var key = await EnsureAuthenticatorKeyAsync(user);
                 ViewBag.QrCodeUrl = GenerateQrCodeUrl(user.Email!, key, user.UserName!);
                 ViewBag.Key = key;
-                TempData["error"] = "Mã Xác Thực Không Hợp Lệ.";
+                TempData["error"] = "Invalid Verification Code.";
                 return View();
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, true);
             await _signInManager.SignOutAsync();
             HttpContext.Session.Clear();
-            TempData["success"] = "Đã Bật Xác Thực 2 Bước.";
+            TempData["success"] = "2-Step Verification Enabled.";
             return RedirectToAction("Index", "Home");
         }
 
@@ -122,7 +122,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var user = await _userManager.FindByNameAsync(model.UserName!);
             if (user == null)
             {
-                TempData["error"] = "Tài khoản không tồn tại.";
+                TempData["error"] = "Account does not exist.";
                 return View(model);
             }
 
@@ -143,7 +143,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                     return RedirectToAction("Enable2FA", new { returnUrl = model.ReturnURL });
                 }
 
-                TempData["success"] = "Đăng nhập thành công.";
+                TempData["success"] = "Log in successfully.";
 
                 if (!string.IsNullOrEmpty(model.ReturnURL) && Url.IsLocalUrl(model.ReturnURL))
                     return Redirect(model.ReturnURL);
@@ -151,7 +151,7 @@ namespace NguyenManhDuc.WebApp.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            TempData["error"] = "Đăng nhập thất bại. Kiểm tra lại thông tin.";
+            TempData["error"] = "Login failed. Check information again.";
             return View(model);
         }
 
@@ -174,7 +174,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(verificationCode))
             {
-                TempData["error"] = "Vui Lòng Nhập Mã Xác Thực.";
+                TempData["error"] = "Please enter verification code.";
                 return View();
             }
 
@@ -187,13 +187,13 @@ namespace NguyenManhDuc.WebApp.Controllers
             {
                 HttpContext.Session.SetString("Is2FACompleted", "true");
                 HttpContext.Session.SetString("IsAdmin", (await _userManager.IsInRoleAsync(user, "Admin")) ? "true" : "false");
-                TempData["success"] = "Đăng Nhập Thành Công.";
+                TempData["success"] = "Log in successfully.";
                 return RedirectToAction("Index", "Home");
             }
 
             if (result.IsLockedOut) return RedirectToAction("Lockout", "Account");
 
-            TempData["error"] = "Mã Xác Thực Không Hợp Lệ.";
+            TempData["error"] = "Invalid Verification Code.";
             return View();
         }
 
@@ -213,7 +213,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email!);
             if (user == null || !await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                TempData["error"] = "Email Không Tồn Tại.";
+                TempData["error"] = "Email does not exist.";
                 return View();
             }
 
@@ -221,7 +221,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var resetLink = Url.Action("ConfirmReset2FA", "Account", new { userId = user.Id, token }, Request.Scheme);
 
             await _emailSender.SendEmailAsync(model.Email!, "Reset 2FA", $"Ấn Vào <a href='{resetLink}'>Đây</a> Để Đặt Lại Xác Thực 2 Bước.");
-            TempData["success"] = "Đã Gửi Link Reset 2FA Đến Email Của Bạn.";
+            TempData["success"] = "A 2FA reset link has been sent to your email.";
             return RedirectToAction("Login", "Account");
         }
 
@@ -238,18 +238,18 @@ namespace NguyenManhDuc.WebApp.Controllers
             var isValid = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, "Reset2FA", token);
             if (!isValid)
             {
-                TempData["error"] = "Liên Kết Không Hợp Lệ Hoặc Đã Hết Hạn.";
+                TempData["error"] = "The link is invalid or expired.";
                 return RedirectToAction("Login", "Account");
             }
 
             var disableResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disableResult.Succeeded)
             {
-                TempData["error"] = "Không Thể Reset 2FA.";
+                TempData["error"] = "Unable to reset 2FA.";
                 return RedirectToAction("Login", "Account");
             }
 
-            TempData["success"] = "Đã Reset 2FA. Vui Lòng Đăng Nhập Lại Để Thiết Lập 2FA.";
+            TempData["success"] = "2FA reset successful. Please log in again to set up 2FA.";
             return RedirectToAction("Login", "Account");
         }
 
@@ -269,7 +269,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (!await _roleManager.RoleExistsAsync("Customer"))
             {
-                TempData["error"] = "Admin Chưa Tạo Vai Trò 'Customer'.";
+                TempData["error"] = "The administrator has not created the 'Customer' role.";
                 return View(registerViewModel);
             }
 
@@ -286,11 +286,11 @@ namespace NguyenManhDuc.WebApp.Controllers
                 var roleResult = await _userManager.AddToRoleAsync(newUser, "Customer");
                 if (roleResult.Succeeded)
                 {
-                    TempData["success"] = "Đăng Ký Thành Công.";
+                    TempData["success"] = "Registration successful.";
                     return RedirectToAction("Login");
                 }
 
-                TempData["error"] = "Gán Vai Trò Thất Bại.";
+                TempData["error"] = "Role assignment failed.";
                 await _userManager.DeleteAsync(newUser);
             }
 
@@ -305,7 +305,7 @@ namespace NguyenManhDuc.WebApp.Controllers
         {
             await _signInManager.SignOutAsync();
             HttpContext.Session.Clear();
-            TempData["success"] = "Đăng Xuất Thành Công.";
+            TempData["success"] = "Log out successfully.";
             return Redirect(returnURL);
         }
 
@@ -376,7 +376,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var user = await _userManager.FindByEmailAsync(appUserModel.Email!);
             if (user == null)
             {
-                TempData["error"] = "Email Không Hợp Lệ.";
+                TempData["error"] = "Email does not exist.";
                 return RedirectToAction("ForgotPassword");
             }
 
@@ -391,7 +391,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             await _emailSender.SendEmailAsync(user.Email!, "Đặt Lại Mật Khẩu", body);
 
-            TempData["success"] = "Email Đặt Lại Mật Khẩu Đã Được Gửi.";
+            TempData["success"] = "Password reset email sent.";
             return RedirectToAction("ForgotPassword");
         }
 
@@ -421,7 +421,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email!);
             if (user == null)
             {
-                TempData["error"] = "Email Không Hợp Lệ.";
+                TempData["error"] = "Email does not exist.";
                 return RedirectToAction("ForgotPassword");
             }
 
@@ -429,7 +429,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (result.Succeeded)
             {
-                TempData["success"] = "Cập Nhật Mật Khẩu Thành Công.";
+                TempData["success"] = "Password updated successfully.";
                 return RedirectToAction("Login");
             }
 
@@ -454,7 +454,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("Không Tìm Thấy Thông Tin Cá Nhân.");
+                return NotFound("No personal information found.");
             }
 
             var information = await _dataContext.Information.FirstOrDefaultAsync(s => s.UserId == userId);
@@ -513,7 +513,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             }
 
             await _dataContext.SaveChangesAsync();
-            TempData["success"] = "Cập Nhật Thông Tin Cá Nhân Thành Công.";
+            TempData["success"] = "Personal information has been updated successfully.";
             return RedirectToAction("Information");
         }
 
@@ -532,13 +532,13 @@ namespace NguyenManhDuc.WebApp.Controllers
                 string.IsNullOrWhiteSpace(newPassword) ||
                 string.IsNullOrWhiteSpace(confirmPassword))
             {
-                TempData["error"] = "Vui Lòng Nhập Đầy Đủ Thông Tin.";
+                TempData["error"] = "Please enter complete information.";
                 return View();
             }
 
             if (newPassword != confirmPassword)
             {
-                TempData["error"] = "Mật Khẩu Không Trùng Khớp.";
+                TempData["error"] = "Passwords do not match.";
                 return View();
             }
 
@@ -549,7 +549,7 @@ namespace NguyenManhDuc.WebApp.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.RefreshSignInAsync(user);
-                TempData["success"] = "Đổi Mật Khẩu Thành Công.";
+                TempData["success"] = "Password changed successfully.";
                 return RedirectToAction("Index", "Home");
             }
 

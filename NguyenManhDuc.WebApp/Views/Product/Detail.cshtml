@@ -7,10 +7,6 @@
 @* 	} *@
 @* </style> *@
 
-@* <div class="col-sm-3"> *@
-@* 	<partial name="_SidebarPartial" /> *@
-@* </div> *@
-
 <div class="col-sm-12 padding-right">
 	<div class="product-details">
 		<div class="col-sm-4">
@@ -52,6 +48,14 @@
 							</td>
 						</tr>
 					<tr>
+						<th>Màu Sắc:</th>
+						<td>@Model.Product.Color</td>
+					</tr>
+					<tr>
+						<th>Phiên Bản:</th>
+						<td>@Model.Product.Version</td>
+					</tr>
+					<tr>
 						<th>Danh Mục:</th>
 						<td>@Model.Category.Name</td>
 					</tr>
@@ -63,24 +67,19 @@
 						<th>Công Ty:</th>
 						<td>@Model.Company.Name</td>
 					</tr>
-					<tr>
-						<td></td>
-						<td>
-							@if (Model.Product.Quantity > 0)
-							{
-								<a class="btn btn-default add-to-cart" asp-controller="Cart" asp-action="Add" asp-route-Id="@Model.Product.Id">
-									<i class="fa fa-shopping-cart"></i> Thêm Vào Giỏ Hàng
-								</a>
-							}
-							else
-							{
-								<a class="btn btn-default add-to-cart">
-									<i class="fa fa-shopping-cart"></i> Hết Hàng
-								</a>
-							}
-						</td>
-					</tr>
-				</table>			
+				</table>
+				@if (Model.Product.Quantity > 0)
+				{
+					<a class="btn btn-default add-to-cart" asp-controller="Cart" asp-action="Add" asp-route-Id="@Model.Product.Id">
+						<i class="fa fa-shopping-cart"></i> Thêm Vào Giỏ Hàng
+					</a>
+				}
+				else
+				{
+					<a class="btn btn-default add-to-cart">
+						<i class="fa fa-shopping-cart"></i> Hết Hàng
+					</a>
+				}
 			</div>
 		</div>
 	</div>

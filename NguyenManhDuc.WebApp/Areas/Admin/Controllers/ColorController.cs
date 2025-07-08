@@ -47,7 +47,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(colorModel);
             }
 
@@ -58,14 +58,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Màu sắc đã tồn tại.";
+                TempData["error"] = "The color already exists.";
                 return View(colorModel);
             }
 
             _dataContext.Colors.Add(colorModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm màu sắc thành công!";
+            TempData["success"] = "Color added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -75,7 +75,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var colors = await _dataContext.Colors.FindAsync(id);
             if (colors == null)
             {
-                TempData["error"] = "Không tìm thấy màu sắc.";
+                TempData["error"] = "Color not found.";
                 return RedirectToAction("Index");
             }
 
@@ -88,7 +88,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(colorModel);
             }
 
@@ -99,14 +99,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Tên màu sắc bị trùng với màu sắc khác.";
+                TempData["error"] = "The color name is duplicated with another color.";
                 return View(colorModel);
             }
 
             _dataContext.Colors.Update(colorModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật màu sắc thành công!";
+            TempData["success"] = "Color updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -117,14 +117,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var colors = await _dataContext.Colors.FindAsync(id);
             if (colors == null)
             {
-                TempData["error"] = "Không tìm thấy màu sắc.";
+                TempData["error"] = "Color not found.";
                 return RedirectToAction("Index");
             }
 
             _dataContext.Colors.Remove(colors);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa danh mục thành công!";
+            TempData["success"] = "Color deleted successfully!";
             return RedirectToAction("Index");
         }
 
@@ -157,6 +157,5 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             return slug.Trim('-'); // loại bỏ dấu - ở đầu/cuối
         }
-
     }
 }

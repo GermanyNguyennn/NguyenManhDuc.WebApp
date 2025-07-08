@@ -1,17 +1,17 @@
 ﻿@using NguyenManhDuc.WebApp.Models
-@model List<ProductColorModel>
+@model List<ProductVersionModel>
 @{
-    ViewData["Title"] = "Quản Lý Số Lượng Màu Sắc";
+    ViewData["Title"] = "Quản Lý Số Lượng Phiên Bản";
     var productId = ViewBag.ProductId;
 }
 
-<p><a class="btn btn-warning btn-sm" asp-action="AddColorQuantity" asp-route-id="@productId">Thêm Màu Sắc</a></p>
+<p><a class="btn btn-warning btn-sm" asp-action="AddVersionQuantity" asp-route-id="@productId">Thêm Phiên Bản</a></p>
 
 <table class="table table-bordered">
     <thead>
         <tr>
             <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
-            <th scope="col" class="text-center" style="vertical-align: middle;">Màu Sắc</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Phiên Bản</th>
             <th scope="col" class="text-center" style="vertical-align: middle;">Số Lượng</th>
             <th scope="col" class="text-center" style="vertical-align: middle;">Trạng Thái</th>
         </tr>
@@ -21,7 +21,7 @@
         {
             <tr>
                 <td scope="col" class="text-center" style="vertical-align: middle;">@item.Id</td>
-                <td>@item.Color!.Color</td>
+                <td>@item.Version!.Version</td>
                 <td>@item.Quantity</td>
                 <td>
                     @if (item.Status == 1)
@@ -34,9 +34,9 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="EditColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                    <a asp-action="DeleteColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
-                       onclick="return confirm('Bạn có chắc muốn xoá màu này?');">Xoá</a>
+                    <a asp-action="EditVersionQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="DeleteVersionQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
+                       onclick="return confirm('Bạn có chắc muốn xoá Phiên Bản này?');">Xoá</a>
                 </td>
             </tr>
         }

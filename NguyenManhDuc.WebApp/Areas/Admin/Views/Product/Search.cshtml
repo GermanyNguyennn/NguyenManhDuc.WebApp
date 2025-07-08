@@ -1,9 +1,10 @@
 ﻿@using NguyenManhDuc.WebApp.Models
 @using NguyenManhDuc.WebApp.Repository
 @using NguyenManhDuc.WebApp.Repository.Validation
+
 @model IEnumerable<ProductModel>
 @{
-    ViewData["Title"] = "Product List";
+    ViewData["Title"] = "Tìm Kiếm Sản Phẩm";
 
     Paginate pager = new Paginate();
 
@@ -22,46 +23,54 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Tên Sản Phẩm</th>
-                <th scope="col">Ảnh</th>
-                @* <th scope="col">Mô Tả</th> *@
-                <th scope="col">Giá Bán</th>
-                <th scope="col">Giá Nhập</th>
-                <th scope="col">Thêm Số Lượng</th>
-                <th scope="col">Số Lượng Tồn Kho</th>
-                <th scope="col">Đã Bán</th>
-                @* <th scope="col">Slug</th> *@
-                <th scope="col">Danh Mục</th>
-                <th scope="col">Thương Hiệu</th>
-
+                <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Tên Sản Phẩm</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Ảnh</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Thông Số Kỹ Thuật</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Màu Sắc</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Phiên Bản</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Giá Bán</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Giá Nhập</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Số Lượng Tồn Kho</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Đã Bán</th>
+                @* <th scope="col" class="text-center" style="vertical-align: middle;">Màu Sắc</th> *@
+                @* <th scope="col" class="text-center" style="vertical-align: middle;">Phiên Bản</th> *@
+                <th scope="col" class="text-center" style="vertical-align: middle;">Tồn Kho Chi Tiết</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Name</td>
-                        <td><img src="~/media/products/@item.Image" width="70%" height="70%" /></td>
-                        @* <td>@Html.Raw(@item.Description)</td> *@
-                        <td>@item.Price.ToString("#,##0 VNĐ")</td>
-                        <td>@item.ImportPrice.ToString("#,##0 VNĐ")</td>
-                        <td><a asp-controller="Product" asp-action="IndexQuantity" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Thêm</a></td>
-                        <td>@item.Quantity</td>
-                        <td>@item.Sold</td>
-                        @* <td>@item.Slug</td> *@
-                        <td>@item.Category?.Name</td>
-                        <td>@item.Brand?.Name</td>
-                        <td>
-                            <a asp-controller="Product" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                        @* <a asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Delete</a> *@
-                        </td>
-                        <td>
-                        @* <a asp-controller="Product" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Edit</a> *@
-                            <a asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td><img src="@Url.Content($"~/media/products/{item.Image}")" style="max-width: 100px; max-height: 100px;" /></td>
+                    <td>
+                        <a asp-controller="Product" asp-action="IndexDetail" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Xem</a>
+                    </td>
+                    <td>@item.Color</td>
+                    <td>@item.Version</td>
+                    <td>@item.Price.ToString("#,##0 VNĐ")</td>
+                    <td>@item.ImportPrice.ToString("#,##0 VNĐ")</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Sold</td>
+                    @* <td> *@
+                    @*     <a asp-controller="Product" asp-action="ManageColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Màu sắc</a> *@
+                    @* </td> *@
+                    @* <td> *@
+                    @*     <a asp-controller="Product" asp-action="ManageVersionQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Phiên Bản</a> *@
+                    @* </td> *@
+                    <td>
+                        <a asp-controller="Product" asp-action="DetailStock" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Xem</a>
+                    </td>
+                    <td>
+                        <a asp-controller="Product" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+
+                    </td>
+                    <td>
+                        <a asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

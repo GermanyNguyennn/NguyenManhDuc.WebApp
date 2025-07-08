@@ -60,7 +60,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(productModel);
             }
 
@@ -68,7 +68,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (await _dataContext.Products.AnyAsync(p => p.Slug == productModel.Slug))
             {
-                TempData["error"] = "Sản phẩm đã tồn tại.";
+                TempData["error"] = "The product already exists.";
                 return View(productModel);
             }
 
@@ -79,7 +79,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             await _dataContext.SaveChangesAsync();           
 
-            TempData["success"] = "Thêm sản phẩm thành công.";
+            TempData["success"] = "Product added successfully.";
             return RedirectToAction("Index");
         }
 
@@ -104,7 +104,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(productModel);
             }
 
@@ -119,13 +119,15 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Không thể cập nhật hình ảnh: " + ex.Message);
+                    ModelState.AddModelError("", "Unable to update image: " + ex.Message);
                     return View(productModel);
                 }
             }
 
             existingProduct.Name = productModel.Name;
             existingProduct.Description = productModel.Description;
+            existingProduct.Color = productModel.Color;
+            existingProduct.Version = productModel.Version;
             existingProduct.Price = productModel.Price;
             existingProduct.ImportPrice = productModel.ImportPrice;
             existingProduct.Quantity = productModel.Quantity;
@@ -136,7 +138,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Update(existingProduct);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật sản phẩm thành công.";
+            TempData["success"] = "Product updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -150,7 +152,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Products.Remove(product);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa sản phẩm thành công.";
+            TempData["success"] = "Product deleted successfully.";
             return RedirectToAction("Index");
         }       
 
@@ -242,7 +244,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View("ViewDetailLaptop", detail);
             }
 
-            return NotFound("Danh mục không hỗ trợ hiển thị chi tiết.");
+            return NotFound("Category does not support displaying details.");
         }
 
         [HttpPost]
@@ -283,7 +285,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 detail.CPUType = form["CPUType"]!;
 
                 await _dataContext.SaveChangesAsync();
-                TempData["success"] = "Lưu chi tiết điện thoại thành công!";
+                TempData["success"] = "Phone details saved successfully!";
             }
             else if (categoryId == 2) 
             {
@@ -314,11 +316,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 detail.Interface = form["Interface"]!;
 
                 await _dataContext.SaveChangesAsync();
-                TempData["success"] = "Lưu chi tiết laptop thành công!";
+                TempData["success"] = "Laptop details saved successfully!";
             }
             else
             {
-                return BadRequest("Danh mục không hợp lệ.");
+                return BadRequest("Invalid category.");
             }
 
             return RedirectToAction("Index");
@@ -358,7 +360,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             var product = await _dataContext.Products
                 .Include(p => p.ProductColors).ThenInclude(pc => pc.Color)
-                .Include(p => p.ProductCapacities).ThenInclude(pc => pc.Capacity)
+                .Include(p => p.ProductCapacities).ThenInclude(pc => pc.Version)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null) return NotFound();
@@ -371,11 +373,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                     Quantity = x.Quantity
                 }).ToListAsync();
 
-            var capacityStats = await _dataContext.ProductCapacities
+            var capacityStats = await _dataContext.ProductVersions
                 .Where(x => x.ProductId == id)
                 .Select(x => new CapacityStockViewModel
                 {
-                    CapacityName = x.Capacity!.Capacity!,
+                    CapacityName = x.Version!.Version!,
                     Quantity = x.Quantity
                 }).ToListAsync();
 
@@ -384,7 +386,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 .Select(x => new VariantStockViewModel
                 {
                     ColorName = x.Color!.Color!,
-                    CapacityName = x.Capacity!.Capacity!,
+                    CapacityName = x.Version!.Version!,
                     Quantity = x.Quantity
                 }).ToListAsync();
 
@@ -411,7 +413,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddColorQuantity(int id) // id là ProductId
+        public async Task<IActionResult> AddColorQuantity(int id)
         {
             var product = await _dataContext.Products.FindAsync(id);
             if (product == null) return NotFound();
@@ -428,7 +430,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ!";
+                TempData["error"] = "Invalid data.";
                 ViewBag.ProductId = model.ProductId;
                 ViewBag.Colors = await _dataContext.Colors.ToListAsync();
                 return View(model);
@@ -440,7 +442,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (!productExists || !colorExists)
             {
-                TempData["error"] = "Sản phẩm hoặc màu không tồn tại!";
+                TempData["error"] = "Product or color does not exist!";
                 ViewBag.ProductId = model.ProductId;
                 ViewBag.Colors = await _dataContext.Colors.ToListAsync();
                 return View(model);
@@ -452,7 +454,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (exists)
             {
-                TempData["error"] = "Màu đã tồn tại cho sản phẩm!";
+                TempData["error"] = "Color already exists for product!";
                 ViewBag.ProductId = model.ProductId;
                 ViewBag.Colors = await _dataContext.Colors.ToListAsync();
                 return View(model);
@@ -464,12 +466,12 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 _dataContext.ProductColors.Add(model);
                 await _dataContext.SaveChangesAsync();
 
-                TempData["success"] = "Thêm số lượng màu thành công!";
+                TempData["success"] = "Color quantity added successfully!";
                 return RedirectToAction("ManageColorQuantity", new { id = model.ProductId });
             }
             catch (Exception ex)
             {
-                TempData["error"] = "Lỗi khi lưu CSDL: " + (ex.InnerException?.Message ?? ex.Message);
+                TempData["error"] = "Error while saving database: " + (ex.InnerException?.Message ?? ex.Message);
                 ViewBag.ProductId = model.ProductId;
                 ViewBag.Colors = await _dataContext.Colors.ToListAsync();
                 return View(model);
@@ -499,7 +501,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var item = await _dataContext.ProductColors.FindAsync(model.Id);
             if (item == null)
             {
-                TempData["error"] = "Không tìm thấy bản ghi cần sửa.";
+                TempData["error"] = "The record to edit could not be found.";
                 return RedirectToAction("ManageColorQuantity", new { id = model.ProductId });
             }
 
@@ -509,7 +511,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (!productExists || !colorExists)
             {
-                TempData["error"] = "Sản phẩm hoặc màu không tồn tại!";
+                TempData["error"] = "Product or Color does not exist!";
                 ViewBag.Colors = await _dataContext.Colors.ToListAsync();
                 return View(model);
             }
@@ -520,7 +522,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật số lượng màu thành công!";
+            TempData["success"] = "Color quantity updated successfully.";
             return RedirectToAction("ManageColorQuantity", new { id = item.ProductId });
         }
 
@@ -532,15 +534,15 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.ProductColors.Remove(item);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa số lượng màu thành công!";
+            TempData["success"] = "Color quantity deleted successfully.";
             return RedirectToAction("ManageColorQuantity", new { id = item.ProductId });
         }
 
         [HttpGet]
-        public async Task<IActionResult> ManageCapacityQuantity(int id)
+        public async Task<IActionResult> ManageVersionQuantity(int id)
         {
-            var capacityQuantities = await _dataContext.ProductCapacities
-                .Include(pc => pc.Capacity)
+            var capacityQuantities = await _dataContext.ProductVersions
+                .Include(pc => pc.Version)
                 .Where(pc => pc.ProductId == id)
                 .ToListAsync();
 
@@ -549,106 +551,106 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddCapacityQuantity(int id)
+        public async Task<IActionResult> AddVersionQuantity(int id)
         {
             var product = await _dataContext.Products.FindAsync(id);
             if (product == null) return NotFound();
 
             ViewBag.ProductId = id;
-            ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+            ViewBag.Versions = await _dataContext.Versions.ToListAsync();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCapacityQuantity(ProductCapacityModel model)
+        public async Task<IActionResult> AddVersionQuantity(ProductVersionModel model)
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ!";
+                TempData["error"] = "Invalid data.";
                 ViewBag.ProductId = model.ProductId;
-                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                ViewBag.Capacities = await _dataContext.Versions.ToListAsync();
                 return View(model);
             }
 
             // ✅ Kiểm tra Product và Capacity có tồn tại không
             var productExists = await _dataContext.Products.AnyAsync(p => p.Id == model.ProductId);
-            var capacityExists = await _dataContext.Capacities.AnyAsync(c => c.Id == model.CapacityId);
+            var capacityExists = await _dataContext.Versions.AnyAsync(c => c.Id == model.VersionId);
 
             if (!productExists || !capacityExists)
             {
-                TempData["error"] = "Sản phẩm hoặc dung lượng không tồn tại!";
+                TempData["error"] = "Product or Version does not exist!";
                 ViewBag.ProductId = model.ProductId;
-                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                ViewBag.Versions = await _dataContext.Versions.ToListAsync();
                 return View(model);
             }
 
-            // ✅ Kiểm tra trùng dung lượng
-            bool exists = await _dataContext.ProductCapacities
-                .AnyAsync(pc => pc.ProductId == model.ProductId && pc.CapacityId == model.CapacityId);
+            // ✅ Kiểm tra trùng Phiên Bản
+            bool exists = await _dataContext.ProductVersions
+                .AnyAsync(pc => pc.ProductId == model.ProductId && pc.VersionId == model.VersionId);
 
             if (exists)
             {
-                TempData["error"] = "Dung lượng đã tồn tại cho sản phẩm!";
+                TempData["error"] = "Version already exists for product!";
                 ViewBag.ProductId = model.ProductId;
-                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                ViewBag.Versions = await _dataContext.Versions.ToListAsync();
                 return View(model);
             }
 
             try
             {
                 model.Id = 0;
-                _dataContext.ProductCapacities.Add(model);
+                _dataContext.ProductVersions.Add(model);
                 await _dataContext.SaveChangesAsync();
 
-                TempData["success"] = "Thêm số lượng dung lượng thành công!";
-                return RedirectToAction("ManageCapacityQuantity", new { id = model.ProductId });
+                TempData["success"] = "Version quantity added successfully!";
+                return RedirectToAction("ManageVersionQuantity", new { id = model.ProductId });
             }
             catch (Exception ex)
             {
-                TempData["error"] = "Lỗi khi lưu CSDL: " + (ex.InnerException?.Message ?? ex.Message);
+                TempData["error"] = "Error while saving database: " + (ex.InnerException?.Message ?? ex.Message);
                 ViewBag.ProductId = model.ProductId;
-                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                ViewBag.Versions = await _dataContext.Versions.ToListAsync();
                 return View(model);
             }
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> EditCapacityQuantity(int id)
+        public async Task<IActionResult> EditVersionQuantity(int id)
         {
-            var item = await _dataContext.ProductCapacities.FindAsync(id);
+            var item = await _dataContext.ProductVersions.FindAsync(id);
             if (item == null) return NotFound();
 
-            ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+            ViewBag.Versions = await _dataContext.Versions.ToListAsync();
             return View(item);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCapacityQuantity(ProductCapacityModel model)
+        public async Task<IActionResult> EditVersionQuantity(ProductVersionModel model)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                ViewBag.Versions = await _dataContext.Versions.ToListAsync();
                 return View(model);
             }
 
-            var item = await _dataContext.ProductCapacities.FindAsync(model.Id);
+            var item = await _dataContext.ProductVersions.FindAsync(model.Id);
             if (item == null)
             {
-                TempData["error"] = "Không tìm thấy bản ghi cần sửa.";
-                return RedirectToAction("ManageCapacityQuantity", new { id = model.ProductId });
+                TempData["error"] = "The record to edit could not be found.";
+                return RedirectToAction("ManageVersionQuantity", new { id = model.ProductId });
             }
 
             var productExists = await _dataContext.Products.AnyAsync(p => p.Id == model.ProductId);
-            var capacityExists = await _dataContext.Capacities.AnyAsync(c => c.Id == model.CapacityId);
+            var capacityExists = await _dataContext.Versions.AnyAsync(c => c.Id == model.VersionId);
 
             if (!productExists || !capacityExists)
             {
-                TempData["error"] = "Sản phẩm hoặc dung lượng không tồn tại!";
-                ViewBag.Capacities = await _dataContext.Capacities.ToListAsync();
+                TempData["error"] = "Product or Version does not exist!";
+                ViewBag.Versions = await _dataContext.Versions.ToListAsync();
                 return View(model);
             }
 
@@ -657,62 +659,20 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật số lượng dung lượng thành công!";
-            return RedirectToAction("ManageCapacityQuantity", new { id = item.ProductId });
+            TempData["success"] = "Version quantity updated successfully!";
+            return RedirectToAction("ManageVersionQuantity", new { id = item.ProductId });
         }
 
-        public async Task<IActionResult> DeleteCapacityQuantity(int id)
+        public async Task<IActionResult> DeleteVersionQuantity(int id)
         {
-            var item = await _dataContext.ProductCapacities.FindAsync(id);
+            var item = await _dataContext.ProductVersions.FindAsync(id);
             if (item == null) return NotFound();
 
-            _dataContext.ProductCapacities.Remove(item);
+            _dataContext.ProductVersions.Remove(item);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa số lượng dung lượng thành công!";
-            return RedirectToAction("ManageCapacityQuantity", new { id = item.ProductId });
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddVariant(ProductVariantModel model)
-        {
-            if (!ModelState.IsValid) return RedirectToAction("DetailStock", new { id = model.ProductId });
-
-            _dataContext.ProductVariants.Add(model);
-            await _dataContext.SaveChangesAsync();
-
-            TempData["success"] = "Thêm tồn kho (biến thể) thành công!";
-            return RedirectToAction("DetailStock", new { id = model.ProductId });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditVariantQuantity(int id, int quantity)
-        {
-            var variant = await _dataContext.ProductVariants.FindAsync(id);
-            if (variant == null) return NotFound();
-
-            variant.Quantity = quantity;
-            await _dataContext.SaveChangesAsync();
-
-            TempData["success"] = "Cập nhật số lượng biến thể thành công!";
-            return RedirectToAction("DetailStock", new { id = variant.ProductId });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteVariant(int id)
-        {
-            var variant = await _dataContext.ProductVariants.FindAsync(id);
-            if (variant == null) return NotFound();
-
-            _dataContext.ProductVariants.Remove(variant);
-            await _dataContext.SaveChangesAsync();
-
-            TempData["success"] = "Xoá tồn kho biến thể thành công!";
-            return RedirectToAction("DetailStock", new { id = variant.ProductId });
-        }
+            TempData["success"] = "Version quantity deleted successfully!";
+            return RedirectToAction("ManageVersionQuantity", new { id = item.ProductId });
+        }        
     }
 }

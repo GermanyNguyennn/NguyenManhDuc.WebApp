@@ -22,22 +22,18 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Mã Giao Dịch</th>
-                <th scope="col">Nội Dung Giao Dịch</th>
-                @* <th scope="col">Payment Method</th> *@
-                @* <th scope="col">Payment Id</th>           *@
-                <th scope="col">Số Tiền Giao Dịch</th>
-                <th scope="col">Ngày Giao Dịch</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Mã Giao Dịch</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Nội Dung Giao Dịch</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Số Tiền Giao Dịch</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Ngày Giao Dịch</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>@Model.Id</td>
+                <td scope="col" class="text-center" style="vertical-align: middle;">@Model.Id</td>
                 <td>@Model.OrderId</td>
                 <td>@Model.OrderInfo</td>
-                @* <td>@Model.PaymentMethod</td> *@
-                @* <td>@Model.PaymentId</td> *@
                 <td>@Model.Amount.ToString("#,##0 VNĐ")</td>
                 <td>@Model.CreatedDate.ToString()</td>
             </tr>

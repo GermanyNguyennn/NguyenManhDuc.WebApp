@@ -1,14 +1,14 @@
 ﻿@using NguyenManhDuc.WebApp.Areas.Admin.Models.ViewModels
 @model AdminProductStockViewModel
 @{
-    ViewData["Title"] = "Chi tiết tồn kho sản phẩm";
+    ViewData["Title"] = "Chi Tiết Tồn Kho Sản Phẩm";
 }
 
 <h4 class="text-center">🔹 @Model?.Product?.Name</h4>
 
 <p><a asp-action="Index" asp-controller="Product" class="btn btn-warning btn-sm">Quay Lại</a></p>
 
-<h4>🔹 Số lượng theo Màu</h4>
+<h4>🔹 Số lượng theo Màu Sắc</h4>
 <table class="table table-bordered">
     <thead><tr><th>Màu Sắc</th><th>Số Lượng</th></tr></thead>
     <tbody>
@@ -19,9 +19,9 @@
     </tbody>
 </table>
 
-<h4>🔹 Số lượng theo Dung lượng</h4>
+<h4>🔹 Số lượng theo Phiên Bản</h4>
 <table class="table table-bordered">
-    <thead><tr><th>Dung Lượng</th><th>Số Lượng</th></tr></thead>
+    <thead><tr><th>Phiên Bản</th><th>Số Lượng</th></tr></thead>
     <tbody>
         @foreach (var capacity in Model!.Capacities!)
         {
@@ -30,9 +30,9 @@
     </tbody>
 </table>
 
-<h4>🔹 Số lượng theo Tổ hợp Màu + Dung lượng</h4>
+<h4>🔹 Số lượng theo Tổ hợp Màu Sắc + Phiên Bản</h4>
 <table class="table table-bordered">
-    <thead><tr><th>Màu</th><th>Dung Lượng</th><th>Số Lượng</th></tr></thead>
+    <thead><tr><th>Màu</th><th>Phiên Bản</th><th>Số Lượng</th></tr></thead>
     <tbody>
         @foreach (var variant in Model!.Variants!)
         {

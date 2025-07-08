@@ -1,22 +1,22 @@
 ﻿@using NguyenManhDuc.WebApp.Models
-@model ProductCapacityModel
+@model ProductVersionModel
 @{
-    ViewData["Title"] = "Sửa số lượng dung lượng";
-    var capacities = ViewBag.Capacities as List<CapacityModel>;
+    ViewData["Title"] = "Thêm Số Lượng Phiên Bản";
+    var versions = ViewBag.Versions as List<VersionModel>;
     var productId = ViewBag.ProductId;
 }
 
-<form asp-action="EditCapacityQuantity" method="POST" enctype="multipart/form-data">
+<form asp-action="AddVersionQuantity" method="POST" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
-    <input asp-for="ProductId" type="hidden" />
+    <input asp-for="ProductId" type="hidden" value="@productId" />
 
     <div class="form-group">
-        <label>Dung Lượng</label>
-        <select asp-for="CapacityId" class="form-control" asp-items="@(new SelectList(capacities, "Id", "Capacity"))">
-            <option value="">-- Chọn Dung Lượng --</option>
+        <label>Phiên Bản</label>
+        <select asp-for="VersionId" class="form-control" asp-items="@(new SelectList(versions, "Id", "Version"))">
+            <option value="">-- Chọn Phiên Bản --</option>
         </select>
-        <span asp-validation-for="CapacityId" class="text-danger"></span>
+        <span asp-validation-for="VersionId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -35,7 +35,7 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-warning btn-sm">Sửa</button>
+        <button type="submit" class="btn btn-warning btn-sm">Thêm</button>
         <a asp-action="ManageCapacityQuantity" asp-route-id="@productId" class="btn btn-warning btn-sm">Quay lại</a>
     </div>
 </form>

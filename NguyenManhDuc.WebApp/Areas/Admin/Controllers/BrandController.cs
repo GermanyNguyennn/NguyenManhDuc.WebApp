@@ -46,7 +46,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(brandModel);
             }
 
@@ -57,14 +57,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Thương hiệu đã tồn tại.";
+                TempData["error"] = "The brand already exists.";
                 return View(brandModel);
             }
 
             _dataContext.Brands.Add(brandModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm thương hiệu thành công!";
+            TempData["success"] = "Brand added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -74,7 +74,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var brand = await _dataContext.Brands.FindAsync(id);
             if (brand == null)
             {
-                TempData["error"] = "Không tìm thấy thương hiệu.";
+                TempData["error"] = "Brand not found.";
                 return RedirectToAction("Index");
             }
 
@@ -87,7 +87,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(brandModel);
             }
 
@@ -98,14 +98,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (slugExists)
             {
-                TempData["error"] = "Tên thương hiệu bị trùng với thương hiệu khác.";
+                TempData["error"] = "The brand name is duplicated with another brand.";
                 return View(brandModel);
             }
 
             _dataContext.Brands.Update(brandModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật thương hiệu thành công!";
+            TempData["success"] = "Brand updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -116,14 +116,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var brand = await _dataContext.Brands.FindAsync(id);
             if (brand == null)
             {
-                TempData["error"] = "Không tìm thấy thương hiệu.";
+                TempData["error"] = "Brand not found.";
                 return RedirectToAction("Index");
             }
 
             _dataContext.Brands.Remove(brand);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa thương hiệu thành công!";
+            TempData["success"] = "Brand deleted successfully!";
             return RedirectToAction("Index");
         }
 

@@ -28,19 +28,19 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (response == null)
             {
-                TempData["error"] = "MoMo Không Phản Hồi.";
+                TempData["error"] = "MoMo is not responding.";
                 return RedirectToAction("Cart", "Index");
             }
 
             if (response.ErrorCode != 0)
             {
-                TempData["error"] = $"Lỗi MoMo: {response.LocalMessage ?? response.Message} (Mã lỗi: {response.ErrorCode})";
+                TempData["error"] = $"MoMo error:  {response.LocalMessage ?? response.Message} (Error code: {response.ErrorCode})";
                 return RedirectToAction("Cart", "Index");
             }
 
             if (string.IsNullOrEmpty(response.PayUrl))
             {
-                TempData["error"] = "Không Nhận Được Đường Dẫn Thanh Toán Từ MoMo.";
+                TempData["error"] = "Did not receive payment link from MoMo.";
                 return RedirectToAction("Cart", "Index");
             }
 
@@ -55,7 +55,7 @@ namespace NguyenManhDuc.WebApp.Controllers
 
             if (string.IsNullOrEmpty(response))
             {
-                TempData["error"] = "Không Nhận Được Đường Dẫn Thanh Toán Từ VNPay.";
+                TempData["error"] = "Did not receive payment link from VNPay.";
                 return RedirectToAction("Cart", "Index");
             }
 

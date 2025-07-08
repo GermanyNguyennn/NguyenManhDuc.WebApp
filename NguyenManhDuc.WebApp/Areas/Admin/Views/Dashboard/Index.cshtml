@@ -4,7 +4,7 @@
 @using NguyenManhDuc.WebApp.Models.Statistical
 
 @{
-    ViewData["Title"] = "Thống Kê Doanh Thu";
+    ViewData["Title"] = "Thống Kê";
     var revenueChartData = ViewBag.RevenueChartData as List<RevenueChartViewModel> ?? new();
     var selectedCategory = ViewBag.SelectedCategory as int?;
     var selectedBrand = ViewBag.SelectedBrand as int?;
@@ -21,13 +21,13 @@
     <form method="GET" class="mb-4">
         <table class="table table-bordered w-auto">
             <tr>
-                <th class="vertical-middle"><label>Từ Ngày:</label></th>
+                <th scope="col" style="vertical-align: middle;"><label>Từ Ngày:</label></th>
                 <td><input asp-for="FromDate" type="date" class="form-control" /></td>
-                <th class="vertical-middle"><label>Đến Ngày:</label></th>
+                <th scope="col" style="vertical-align: middle;"><label>Đến Ngày:</label></th>
                 <td><input asp-for="ToDate" type="date" class="form-control" /></td>
             </tr>
             <tr>
-                <th class="vertical-middle">Danh Mục:</th>
+                <th scope="col" style="vertical-align: middle;">Danh Mục:</th>
                 <td>
                     <select name="CategoryId" class="form-select">
                         <option value="">-- Tất cả --</option>
@@ -37,7 +37,7 @@
                         }
                     </select>
                 </td>
-                <th class="vertical-middle">Thương Hiệu:</th>
+                <th scope="col" style="vertical-align: middle;">Thương Hiệu:</th>
                 <td>
                     <select name="BrandId" class="form-select">
                         <option value="">-- Tất cả --</option>
@@ -57,23 +57,25 @@
 <table class="table table-bordered table-hover">
     <thead class="table-dark">
         <tr>
-            <th class="vertical-middle">Ảnh</th>
-            <th class="vertical-middle">Tên Sản Phẩm</th>
-            <th class="vertical-middle">Số Lượng Đã Bán</th>
-            <th class="vertical-middle text-success">Có Mã Giảm Giá</th>
-            <th class="vertical-middle text-danger">Không Có Mã Giảm Giá</th>
-            <th class="vertical-middle">Doanh Thu Ban Đầu</th>
-            <th class="vertical-middle text-success">Doanh Thu Có Mã Giảm Giá</th>
-            <th class="vertical-middle text-danger">Doanh Thu Không Có Mã Giảm Giá</th>
-            <th class="vertical-middle text-primary">Tiền Giảm Giá</th>
-            <th class="vertical-middle text-warning">Doanh Thu Cuối Cùng</th>
-            <th class="vertical-middle">Giá Vốn</th>
-            <th class="vertical-middle">Lợi Nhuận Ban Đầu</th>
-            <th class="vertical-middle text-success">Lợi Nhuận Có Mã Giảm Giá</th>
-            <th class="vertical-middle text-danger">Lợi Nhuận Không Mã Giảm Giá</th>
-            <th class="vertical-middle text-warning">Lợi Nhuận Cuối Cùng</th>
-            <th class="vertical-middle">Ngày Bán Đầu</th>
-            <th class="vertical-middle">Ngày Bán Cuối</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Ảnh</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Tên Sản Phẩm</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Số Lượng Đã Bán</th>
+            <th scope="col" class="text-center text-success" style="vertical-align: middle;">Có Mã Giảm Giá</th>
+            <th scope="col" class="text-center text-danger" style="vertical-align: middle;">Không Có Mã Giảm Giá</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Doanh Thu Ban Đầu</th>
+            <th scope="col" class="text-center text-success" style="vertical-align: middle;">Doanh Thu Có Mã Giảm Giá</th>
+            <th scope="col" class="text-center text-danger" style="vertical-align: middle;">Doanh Thu Không Có Mã Giảm Giá</th>
+            <th scope="col" class="text-center text-primary" style="vertical-align: middle;">Tiền Giảm Giá</th>
+            <th scope="col" class="text-center text-warning" style="vertical-align: middle;">Doanh Thu Cuối Cùng</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Giá Vốn</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Lợi Nhuận Ban Đầu</th>
+            <th scope="col" class="text-center text-success" style="vertical-align: middle;">Lợi Nhuận Có Mã Giảm Giá</th>
+            <th scope="col" class="text-center text-danger" style="vertical-align: middle;">Lợi Nhuận Không Mã Giảm Giá</th>
+            <th scope="col" class="text-center text-warning" style="vertical-align: middle;">Lợi Nhuận Cuối Cùng</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Ngày Bán Đầu</th>
+            <th scope="col" class="text-center" style="vertical-align: middle;">Ngày Bán Cuối</th>
+
+
         </tr>
     </thead>
     <tbody>

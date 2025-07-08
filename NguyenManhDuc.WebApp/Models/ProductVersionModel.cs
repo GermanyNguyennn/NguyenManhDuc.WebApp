@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NguyenManhDuc.WebApp.Models
 {
-    public class ProductCapacityModel
+    public class ProductVersionModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,10 +16,10 @@ namespace NguyenManhDuc.WebApp.Models
         public ProductModel? Product { get; set; }
 
         [Required]
-        public int CapacityId { get; set; }
+        public int VersionId { get; set; }
 
-        [ForeignKey("CapacityId")]
-        public CapacityModel? Capacity { get; set; }
+        [ForeignKey("VersionId")]
+        public VersionModel? Version { get; set; }
 
         [Required]
         public int Quantity { get; set; }

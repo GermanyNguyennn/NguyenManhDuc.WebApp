@@ -1,9 +1,9 @@
 ﻿@using NguyenManhDuc.WebApp.Models
 @using NguyenManhDuc.WebApp.Repository
 @using NguyenManhDuc.WebApp.Repository.Validation
-@model IEnumerable<ColorModel>
+@model IEnumerable<VersionModel>
 @{
-    ViewData["Title"] = "Danh Sách Màu Sắc";
+    ViewData["Title"] = "Danh Sách Phiên Bản";
 
     Paginate pager = new Paginate();
 
@@ -17,13 +17,12 @@
     }
 }
 <div class="">
-    <p><a asp-controller="Color" asp-action="Add" class="btn btn-warning btn-sm">Thêm Màu Sắc</a></p>
+    <p><a asp-controller="Version" asp-action="Add" class="btn btn-warning btn-sm">Thêm Phiên Bản</a></p>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
-                <th scope="col" class="text-center" style="vertical-align: middle;">Tên Màu Sắc</th>
-                <th scope="col" class="text-center" style="vertical-align: middle;">Mã Màu Sắc</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Phiên Bản</th>
                 <th scope="col" class="text-center" style="vertical-align: middle;">Slug</th>
             </tr>
         </thead>
@@ -32,12 +31,11 @@
             {
                 <tr>
                     <td scope="col" class="text-center" style="vertical-align: middle;">@item.Id</td>
-                    <td>@item.Color</td>
-                    <td>@item.Code</td>
-                    <td>@item.Slug</td>                   
+                    <td>@item.Version</td>
+                    <td>@item.Slug</td>
                     <td>
-                        <a asp-controller="Color" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                        <a asp-controller="Color" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
+                        <a asp-controller="Version" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                        <a asp-controller="Version" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
                     </td>
                 </tr>
             }

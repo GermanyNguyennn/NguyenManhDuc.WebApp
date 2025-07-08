@@ -2,7 +2,7 @@
 @model CartViewModel
 
 @{
-	ViewData["Title"] = "Cart";
+	ViewData["Title"] = "Giỏ Hàng";
 
 	var isInfoIncomplete = string.IsNullOrWhiteSpace(Model.FullName) ||
 							string.IsNullOrWhiteSpace(Model.Email) ||
@@ -67,11 +67,11 @@
 				<table class="table table-bordered text-center align-middle">
 					<thead class="thead-dark">
 						<tr>
-							<th class="text-center">Ảnh Sản Phẩm</th>
-							<th class ="text-center">Tên Sản Phẩm</th>
-							<th class="text-center">Đơn Giá</th>
-							<th class="text-center" colspan="3">Số Lượng</th>
-							<th class="text-center">Thành Tiền</th>
+							<th scope="col" class="text-center" style="vertical-align: middle;">Ảnh Sản Phẩm</th>
+							<th scope="col" class="text-center" style="vertical-align: middle;">Tên Sản Phẩm</th>
+							<th scope="col" class="text-center" style="vertical-align: middle;">Đơn Giá</th>
+							<th scope="col" class="text-center" style="vertical-align: middle;" colspan="3">Số Lượng</th>
+							<th scope="col" class="text-center" style="vertical-align: middle;">Thành Tiền</th>
 							<th></th>
 						</tr>
 					</thead>

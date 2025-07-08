@@ -23,23 +23,23 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Mã Giảm Giá</th>
-                <th scope="col">Mô Tả</th>
-                <th scope="col">Loại Giảm Giá</th>
-                <th scope="col">Giá Trị Giảm</th>
-                <th scope="col">Ngày Bắt Đầu</th>
-                <th scope="col">Ngày Kết Thúc</th>
-                <th scope="col">Số Lượng</th>
-                <th scope="col">Tình Trạng</th>
-                <th scope="col">Trạng Thái</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Mã Giảm Giá</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Mô Tả</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Loại Giảm Giá</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Giá Trị Giảm</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Ngày Bắt Đầu</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Ngày Kết Thúc</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Số Lượng</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Tình Trạng</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Trạng Thái</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var coupon in Model)
             {
                     <tr>
-                        <td>@coupon.Id</td>
+                    <td scope="col" class="text-center" style="vertical-align: middle;">@coupon.Id</td>
                         <td>@coupon.CouponCode</td>
                         <td>@coupon.Description</td>
                         <td>@coupon.DiscountType</td>

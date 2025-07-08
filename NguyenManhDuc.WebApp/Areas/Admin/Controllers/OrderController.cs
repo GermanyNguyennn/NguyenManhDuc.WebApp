@@ -47,14 +47,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> ViewOrder(string orderCode)
         {
             if (string.IsNullOrWhiteSpace(orderCode))
-                return BadRequest("Mã đơn hàng không hợp lệ.");
+                return BadRequest("Invalid order code.");
 
             var order = await _dataContext.Orders
                 .Include(o => o.Coupon)
                 .FirstOrDefaultAsync(o => o.OrderCode == orderCode);
 
             if (order == null)
-                return NotFound("Không tìm thấy đơn hàng.");
+                return NotFound("Order not found.");
 
             var orderDetails = await _dataContext.OrderDetails
                 .Include(od => od.Product)
@@ -73,22 +73,22 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> UpdateView(string orderCode, int status)
         {
             if (string.IsNullOrWhiteSpace(orderCode))
-                return BadRequest(new { success = false, message = "Thiếu mã đơn hàng." });
+                return BadRequest(new { success = false, message = "Missing order code." });
 
             var order = await _dataContext.Orders.FirstOrDefaultAsync(o => o.OrderCode == orderCode);
             if (order == null)
-                return NotFound(new { success = false, message = "Không tìm thấy đơn hàng." });
+                return BadRequest(new { success = false, message = "Order not found." });
 
             order.Status = status;
 
             try
             {
                 await _dataContext.SaveChangesAsync();
-                return Ok(new { success = true, message = "Cập nhật trạng thái thành công." });
+                return Ok(new { success = true, message = "Status updated successfully!" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "Lỗi khi cập nhật trạng thái.", error = ex.Message });
+                return StatusCode(500, new { success = false, message = "Error while updating status.", error = ex.Message });
             }
         }
 
@@ -96,11 +96,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> PaymentMoMoOrder(string orderId)
         {
             if (string.IsNullOrWhiteSpace(orderId))
-                return BadRequest("Thiếu mã đơn hàng.");
+                return BadRequest("Missing order code.");
 
             var moMo = await _dataContext.MoMos.FirstOrDefaultAsync(x => x.OrderId == orderId);
             if (moMo == null)
-                return NotFound("Không tìm thấy thông tin thanh toán MoMo.");
+                return BadRequest("MoMo payment information not found.");
 
             return View(moMo);
         }
@@ -109,11 +109,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> PaymentVNPayOrder(string orderId)
         {
             if (string.IsNullOrWhiteSpace(orderId))
-                return BadRequest("Thiếu mã đơn hàng.");
+                return BadRequest("Missing order code.");
 
             var vnPay = await _dataContext.VNPays.FirstOrDefaultAsync(x => x.OrderId == orderId);
             if (vnPay == null)
-                return NotFound("Không tìm thấy thông tin thanh toán VnPay.");
+                return BadRequest("VNPay payment information not found.");
 
             return View(vnPay);
         }
@@ -122,11 +122,11 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> CustomerInformation(string orderCode)
         {
             if (string.IsNullOrEmpty(orderCode))
-                return NotFound("Thiếu mã đơn hàng.");
+                return NotFound("Missing order code.");
 
             var order = await _dataContext.Orders.FirstOrDefaultAsync(o => o.OrderCode == orderCode);
             if (order == null)
-                return NotFound("Không tìm thấy đơn hàng.");
+                return NotFound("Order not found.");
 
             var viewModel = new CartViewModel
             {

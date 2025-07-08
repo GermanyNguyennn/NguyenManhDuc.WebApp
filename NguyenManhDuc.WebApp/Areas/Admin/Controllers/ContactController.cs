@@ -30,7 +30,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (_dataContext.Contacts.Any())
             {
-                TempData["error"] = "Đã tồn tại thông tin liên hệ. Vui lòng chỉnh sửa thay vì thêm mới.";
+                TempData["error"] = "Contact information already exists. Please edit instead of adding new.";
                 return RedirectToAction("Index");
             }
 
@@ -52,7 +52,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Contacts.Add(contactModel);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm thông tin liên hệ thành công!";
+            TempData["success"] = "Contact information added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -62,7 +62,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var contact = await _dataContext.Contacts.FirstOrDefaultAsync();
             if (contact == null)
             {
-                TempData["error"] = "Không tìm thấy thông tin liên hệ.";
+                TempData["error"] = "No contact information found.";
                 return RedirectToAction("Index");
             }
 
@@ -76,7 +76,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var existedContact = await _dataContext.Contacts.FirstOrDefaultAsync();
             if (existedContact == null)
             {
-                TempData["error"] = "Không tìm thấy thông tin liên hệ.";
+                TempData["error"] = "No contact information found.";
                 return RedirectToAction("Index");
             }
 
@@ -96,7 +96,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Update(existedContact);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật thông tin liên hệ thành công!";
+            TempData["success"] = "Contact information updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -107,7 +107,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var contact = await _dataContext.Contacts.FindAsync(id);
             if (contact == null)
             {
-                TempData["error"] = "Không tìm thấy thông tin liên hệ.";
+                TempData["error"] = "No contact information found.";
                 return RedirectToAction("Index");
             }
 
@@ -122,7 +122,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             _dataContext.Contacts.Remove(contact);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa thông tin liên hệ thành công!";
+            TempData["success"] = "Contact information deleted successfully!";
             return RedirectToAction("Index");
         }
 
@@ -146,7 +146,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
         private IActionResult HandleModelError(ContactModel contactModel)
         {
-            TempData["error"] = "Dữ liệu không hợp lệ.";
+            TempData["error"] = "Invalid data.";
 
             var errors = ModelState.Values
                 .SelectMany(v => v.Errors)

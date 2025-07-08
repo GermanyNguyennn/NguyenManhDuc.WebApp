@@ -44,13 +44,13 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(model);
             }
 
             if (model.StartDate >= model.EndDate)
             {
-                TempData["error"] = "Ngày bắt đầu phải nhỏ hơn ngày kết thúc.";
+                TempData["error"] = "Start date must be less than end date.";
                 return View(model);
             }
 
@@ -59,14 +59,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (isExist)
             {
-                TempData["error"] = "Mã giảm giá đã tồn tại.";
+                TempData["error"] = "Coupon code already exists.";
                 return View(model);
             }
 
             _dataContext.Coupons.Add(model);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Thêm mã giảm giá thành công!";
+            TempData["success"] = "Coupon code added successfully!";
             return RedirectToAction("Index");
         }
 
@@ -76,7 +76,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var coupon = await _dataContext.Coupons.FindAsync(id);
             if (coupon == null)
             {
-                TempData["error"] = "Không tìm thấy mã giảm giá.";
+                TempData["error"] = "Coupon code not found.";
                 return RedirectToAction("Index");
             }
 
@@ -89,20 +89,20 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(model);
             }
 
             if (model.StartDate >= model.EndDate)
             {
-                TempData["error"] = "Ngày bắt đầu phải nhỏ hơn ngày kết thúc.";
+                TempData["error"] = "Start date must be less than end date.";
                 return View(model);
             }
 
             var coupon = await _dataContext.Coupons.FindAsync(model.Id);
             if (coupon == null)
             {
-                TempData["error"] = "Không tìm thấy mã giảm giá.";
+                TempData["error"] = "Coupon code not found.";
                 return RedirectToAction("Index");
             }
 
@@ -111,7 +111,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (isExist)
             {
-                TempData["error"] = "Mã giảm giá đã trùng với mã khác.";
+                TempData["error"] = "The coupon code already matches another code.";
                 return View(model);
             }
 
@@ -126,7 +126,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Cập nhật mã giảm giá thành công!";
+            TempData["success"] = "Coupon code updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -137,14 +137,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var coupon = await _dataContext.Coupons.FindAsync(id);
             if (coupon == null)
             {
-                TempData["error"] = "Không tìm thấy mã giảm giá.";
+                TempData["error"] = "Coupon code not found.";
                 return RedirectToAction("Index");
             }
 
             _dataContext.Coupons.Remove(coupon);
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Xóa mã giảm giá thành công!";
+            TempData["success"] = "Coupon code deleted successfully!";
             return RedirectToAction("Index");
         }
 
@@ -155,14 +155,14 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var coupon = await _dataContext.Coupons.FindAsync(id);
             if (coupon == null)
             {
-                TempData["error"] = "Không tìm thấy mã giảm giá.";
+                TempData["error"] = "Coupon code not found.";
                 return RedirectToAction("Index");
             }
 
             coupon.Status = coupon.Status == 1 ? 0 : 1;
             await _dataContext.SaveChangesAsync();
 
-            TempData["success"] = "Đã cập nhật trạng thái mã giảm giá.";
+            TempData["success"] = "Coupon code status has been updated.";
             return RedirectToAction("Index");
         }
     }

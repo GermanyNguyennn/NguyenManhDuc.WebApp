@@ -23,18 +23,18 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Tên Thương Hiệu</th>
-                <th scope="col">Mô Tả</th>
-                <th scope="col">Slug</th>
-                <th scope="col">Trạng Thái</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Tên Thương Hiệu</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Mô Tả</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Slug</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Trạng Thái</th>
             </tr>
         </thead>
         <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Id</td>
+                        <td scope="col" class="text-center" style="vertical-align: middle;">@item.Id</td>
                         <td>@item.Name</td>
                         <td>@Html.Raw(@item.Description)</td>
                         <td>@item.Slug</td>

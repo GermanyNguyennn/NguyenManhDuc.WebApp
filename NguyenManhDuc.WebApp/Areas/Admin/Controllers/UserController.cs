@@ -68,7 +68,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Dữ liệu không hợp lệ.";
+                TempData["error"] = "Invalid data.";
                 return View(model);
             }
 
@@ -92,7 +92,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 }
             }
 
-            TempData["success"] = "Thêm người dùng thành công.";
+            TempData["success"] = "User added successfully.";
             return RedirectToAction("Index");
         }
 
@@ -142,7 +142,7 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
                 return View(model);
             }
 
-            TempData["success"] = "Cập nhật người dùng thành công.";
+            TempData["success"] = "User updated successfully!";
             return RedirectToAction("Index");
         }
 
@@ -154,14 +154,17 @@ namespace NguyenManhDuc.WebApp.Areas.Admin.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            var deleteResult = await _userManager.DeleteAsync(user);
-            if (!deleteResult.Succeeded)
-            {
-                TempData["error"] = "Không thể xoá người dùng.";
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {               
+                TempData["success"] = "User deleted successfully!";
                 return RedirectToAction("Index");
             }
-
-            TempData["success"] = "Xoá người dùng thành công.";
+            else
+            {
+                TempData["error"] = "Role cannot be deleted.";
+            }    
+            
             return RedirectToAction("Index");
         }
     }

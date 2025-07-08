@@ -13,27 +13,27 @@
 
     <table class="table table-bordered">
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="ScreenSize">Kích Thước Màn Hình</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="ScreenSize">Kích Thước Màn Hình</label></th>
             <td><input asp-for="ScreenSize" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="DisplayTechnology">Công Nghệ Màn Hình</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="DisplayTechnology">Công Nghệ Màn Hình</label></th>
             <td><input asp-for="DisplayTechnology" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="RearCamera">Camera Sau</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="RearCamera">Camera Sau</label></th>
             <td><textarea asp-for="RearCamera" class="form-control"></textarea></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="FrontCamera">Camera Trước</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="FrontCamera">Camera Trước</label></th>
             <td><input asp-for="FrontCamera" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="ChipSet">Chip Set</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="ChipSet">Chip Set</label></th>
             <td><input asp-for="ChipSet" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label for="NFC">Công Nghệ NFC</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label for="NFC">Công Nghệ NFC</label></th>
             <td>
                 <select class="form-control" asp-for="NFC">
                     <option value="true" selected="@(Model.NFC == true)">Có</option>
@@ -42,31 +42,31 @@
             </td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="RAMCapacity">RAM</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="RAMCapacity">RAM</label></th>
             <td><input asp-for="RAMCapacity" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="InternalStorage">Bộ Nhớ Trong</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="InternalStorage">Bộ Nhớ Trong</label></th>
             <td><input asp-for="InternalStorage" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="SimCard">Thẻ Sim</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="SimCard">Thẻ Sim</label></th>
             <td><input asp-for="SimCard" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="OperatingSystem">Hệ Điều Hành</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="OperatingSystem">Hệ Điều Hành</label></th>
             <td><input asp-for="OperatingSystem" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="DisplayResolution">Độ Phân Giải Màn Hình</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="DisplayResolution">Độ Phân Giải Màn Hình</label></th>
             <td><input asp-for="DisplayResolution" class="form-control" /></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="DisplayFeatures">Tính Năng Màn Hình</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="DisplayFeatures">Tính Năng Màn Hình</label></th>
             <td><textarea asp-for="DisplayFeatures" class="form-control"></textarea></td>
         </tr>
         <tr>
-            <th style="vertical-align: middle;"><label asp-for="CPUType">Loại CPU</label></th>
+            <th scope="col" class="text-center" style="vertical-align: middle;"><label asp-for="CPUType">Loại CPU</label></th>
             <td><input asp-for="CPUType" class="form-control" /></td>
         </tr>
     </table>

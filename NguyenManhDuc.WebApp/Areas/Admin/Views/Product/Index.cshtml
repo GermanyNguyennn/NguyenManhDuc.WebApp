@@ -4,7 +4,7 @@
 
 @model IEnumerable<ProductModel>
 @{
-    ViewData["Title"] = "Product List";
+    ViewData["Title"] = "Danh Sách Sản Phẩm";
 
     Paginate pager = new Paginate();
 
@@ -23,17 +23,19 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Tên Sản Phẩm</th>
-                <th scope="col">Ảnh</th> 
-                <th scope="col">Thông Số Kỹ Thuật</th>
-                <th scope="col">Giá Bán</th>
-                <th scope="col">Giá Nhập</th>
-                <th scope="col">Số Lượng Tồn Kho</th>
-                <th scope="col">Đã Bán</th>
-                <th scope="col">Màu Sắc</th>
-                <th scope="col">Dung Lượng</th>
-                <th scope="col">Tồn Kho Chi Tiết</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Id</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Tên Sản Phẩm</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Ảnh</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Thông Số Kỹ Thuật</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Màu Sắc</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Phiên Bản</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Giá Bán</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Giá Nhập</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Số Lượng Tồn Kho</th>
+                <th scope="col" class="text-center" style="vertical-align: middle;">Đã Bán</th>
+                @* <th scope="col" class="text-center" style="vertical-align: middle;">Màu Sắc</th> *@
+                @* <th scope="col" class="text-center" style="vertical-align: middle;">Phiên Bản</th> *@
+                <th scope="col" class="text-center" style="vertical-align: middle;">Tồn Kho Chi Tiết</th>
             </tr>
         </thead>
         <tbody>
@@ -46,23 +48,23 @@
                     <td>
                         <a asp-controller="Product" asp-action="IndexDetail" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Xem</a>                       
                     </td>
+                    <td>@item.Color</td>
+                    <td>@item.Version</td>
                     <td>@item.Price.ToString("#,##0 VNĐ")</td>
                     <td>@item.ImportPrice.ToString("#,##0 VNĐ")</td>
                     <td>@item.Quantity</td>
                     <td>@item.Sold</td>
-                    <td>
-                        <a asp-controller="Product" asp-action="ManageColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Màu sắc</a>
-                    </td>
-                    <td>
-                        <a asp-controller="Product" asp-action="ManageCapacityQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Dung lượng</a>
-                    </td>
-
+                    @* <td> *@
+                    @*     <a asp-controller="Product" asp-action="ManageColorQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Màu sắc</a> *@
+                    @* </td> *@
+                    @* <td> *@
+                    @*     <a asp-controller="Product" asp-action="ManageVersionQuantity" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Phiên Bản</a> *@
+                    @* </td> *@
                     <td>
                         <a asp-controller="Product" asp-action="DetailStock" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Xem</a>
                     </td>
                     <td>
                         <a asp-controller="Product" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-
                     </td>
                     <td>
                         <a asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-warning btn-sm confirmDeletion">Xoá</a>
